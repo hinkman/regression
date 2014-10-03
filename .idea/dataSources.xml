@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="2749797589">
+    <data-source source="LOCAL" name="Rails regression: development" uuid="eb7e1624-9a98-4234-95d4-5391b12e37d6">
+      <driver-ref>mysql</driver-ref>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://10.28.2.66/regression_development</jdbc-url>
+      <user-name>regression_user</user-name>
+      <user-password>dfd8dfcfdfcddfd8dfcfdfd9dfd9dfc3dfc5dfc4dff5dfdfdfd9dfcfdfd8</user-password>
+      <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="Rails regression: test" uuid="e8e53d07-7270-4244-ac89-852c7edb1123">
+      <driver-ref>mysql</driver-ref>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://10.28.2.66/regression_test</jdbc-url>
+      <user-name>regression_user</user-name>
+      <user-password>dfd8dfcfdfcddfd8dfcfdfd9dfd9dfc3dfc5dfc4dff5dfdfdfd9dfcfdfd8</user-password>
+      <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="Rails regression: production" uuid="87a86cb3-3644-4af7-8918-8ce9df8cfecc">
+      <driver-ref>mysql</driver-ref>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://10.28.2.66/regression_production</jdbc-url>
+      <user-name>regression</user-name>
+      <user-password>df96df8fdf97df8adfefdfe4dffcdff1df8ddff8dfefdfeddff8dfefdff9dff9dfe3dfe5dfe4dff5dfeedfebdffedfebdfe8dfebdff9dfefdff5dffadfebdff9dff9dffddfe5dff8dfeedf8ddff7df8adf8fdf94</user-password>
+      <libraries />
+    </data-source>
+  </component>
+</project>
+

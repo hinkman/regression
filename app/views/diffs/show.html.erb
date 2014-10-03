@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @diff.title %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @diff.description %>
+</p>
+
+<p>
+  <strong>Config file:</strong>
+  <%= @diff.config_file.name %>
+</p>
+
+<p>
+  <strong>Left:</strong>
+  <%= @diff.left_file_set.name %>
+</p>
+
+<p>
+  <strong>Right:</strong>
+  <%= @diff.right_file_set.name %>
+</p>
+
+<%= link_to 'Edit', edit_diff_path(@diff) %> |
+<%= link_to 'Back', diffs_path %>

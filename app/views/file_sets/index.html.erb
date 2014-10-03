@@ -1,0 +1,29 @@
+<h1>Listing file_sets</h1>
+
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Path</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @file_sets.each do |file_set| %>
+      <tr>
+        <td><%= file_set.name %></td>
+        <td><%= file_set.description %></td>
+        <td><%= file_set.path.file.identifier %></td>
+        <td><%= link_to 'Show', file_set %></td>
+        <td><%= link_to 'Edit', edit_file_set_path(file_set) %></td>
+        <td><%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New File set', new_file_set_path %>

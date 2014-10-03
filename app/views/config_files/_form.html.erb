@@ -1,0 +1,36 @@
+<%= form_for(@config_file) do |f| %>
+  <% if @config_file.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@config_file.errors.count, "error") %> prohibited this config_file from being saved:</h2>
+
+      <ul>
+        <% @config_file.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br>
+    <%= f.text_area :description %>
+  </div>
+  <div class="field">
+    <%= f.label :path %><br>
+
+    <!--We don't allow changing the file_set so if exists, just display.-->
+    <% if @config_file.path? %>
+      <%= @config_file.path.file.identifier %>
+    <% else %>
+      <%= f.file_field :path %>
+      <%= f.hidden_field :path_cache %>
+    <% end %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

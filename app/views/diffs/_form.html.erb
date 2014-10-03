@@ -1,0 +1,37 @@
+<%= form_for(@diff) do |f| %>
+  <% if @diff.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@diff.errors.count, "error") %> prohibited this diff from being saved:</h2>
+
+      <ul>
+      <% @diff.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br>
+    <%= f.text_area :description %>
+  </div>
+  <div class="field">
+    <%= f.label :config_file_id %><br>
+    <%= f.collection_select(:config_file_id, @config_files, :id, :name, :include_blank => "Please select a config file...") %>
+  </div>
+  <div class="field">
+    <%= f.label :left_id %><br>
+    <%= f.collection_select(:left_id, @file_sets, :id, :name, :include_blank => "Please select a file set...") %>
+  </div>
+  <div class="field">
+    <%= f.label :right_id %><br>
+    <%= f.collection_select(:right_id, @file_sets, :id, :name, :include_blank => "Please select a file set...") %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
