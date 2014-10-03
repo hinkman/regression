@@ -5,7 +5,8 @@ class FileSetsController < ApplicationController
   # GET /file_sets
   # GET /file_sets.json
   def index
-    @file_sets = FileSet.all
+    @q = FileSet.search(params[:q])
+    @file_sets = @q.result.includes(:diffs_left, :diffs_right)
   end
 
   # GET /file_sets/1

@@ -5,7 +5,8 @@ class ConfigFilesController < ApplicationController
   # GET /config_files
   # GET /config_files.json
   def index
-    @config_files = ConfigFile.all
+    @q = ConfigFile.search(params[:q])
+    @config_files = @q.result.includes(:diffs)
   end
 
   # GET /config_files/1
