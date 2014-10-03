@@ -1,4 +1,5 @@
 class DiffsController < ApplicationController
+
   before_action :set_diff, only: [:show, :edit, :update, :destroy]
   before_action :set_config_files, only: [:new, :edit]
   before_action :set_file_sets, only: [:new, :edit]
@@ -7,7 +8,8 @@ class DiffsController < ApplicationController
   # GET /diffs
   # GET /diffs.json
   def index
-    @diffs = Diff.all
+    @q = Diff.search(params[:q])
+    @diffs = @q.result.includes(:left_file_set, :right_file_set, :results, :config_file)
   end
 
   # GET /diffs/1
@@ -69,9 +71,6 @@ class DiffsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_diff
       @diff = Diff.find(params[:id])
-      # @config_file = ConfigFile.find(@diff.config_file_id)
-      # @left_file_set = FileSet.find(@diff.left_id)
-      # @right_file_set = FileSet.find(@diff.right_id)
     end
 
     def set_config_files
@@ -87,7 +86,8 @@ class DiffsController < ApplicationController
       params.require(:diff).permit(:title, :description, :config_file_id, :left_id, :right_id)
     end
 
-  def add_action
-    Action.create(:action => action_name, :item => 'diff', :user_id => @current_user.id, :item_id => @diff.id)
-  end
+    def add_action
+      Action.create(:action => action_name, :item => 'diff', :user_id => @current_user.id, :item_id => @diff.id)
+    end
+
 end

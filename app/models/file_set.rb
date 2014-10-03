@@ -7,6 +7,6 @@ class FileSet < ActiveRecord::Base
   has_many :diffs_left_id, :class_name => 'Diff', :foreign_key => 'left_id'
   has_many :diffs_right_id, :class_name => 'Diff', :foreign_key => 'right_id'
 
-  default_scope lambda { where("is_active = 1") }
+  default_scope lambda { where("file_sets.is_active = 1") }
 
 end

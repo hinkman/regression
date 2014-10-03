@@ -32,8 +32,10 @@ gem 'spring',        group: :development
 
 gem 'adauth'
 
-gem 'foreigner'
-gem 'immigrant'
+# gem 'foreigner'
+# gem 'immigrant'
+
+gem 'ransack', github: 'activerecord-hackery/ransack', branch: 'rails-4.1'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

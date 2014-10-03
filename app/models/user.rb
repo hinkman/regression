@@ -15,6 +15,6 @@ class User < ActiveRecord::Base
 
   has_many :actions, :dependent => :destroy
 
-  default_scope lambda { where("is_active = 1") }
+  default_scope lambda { where("users.is_active = 1") }
 
 end

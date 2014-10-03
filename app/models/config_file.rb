@@ -6,5 +6,5 @@ class ConfigFile < ActiveRecord::Base
 
   has_many :diffs
 
-  default_scope lambda { where("is_active = 1") }
+  default_scope lambda { where("config_files.is_active = 1") }
 end
