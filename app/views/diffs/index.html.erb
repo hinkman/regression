@@ -33,6 +33,7 @@
             &nbsp;
           <% else %>
             <%= diff.results.first.updated_at.localtime.strftime("%F %T %Z") %>
+            (<%= diff.results.first.pct_complete %>%)
           <% end %>
         </td>
         <td><%= link_to 'Show', diff %></td>

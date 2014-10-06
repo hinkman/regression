@@ -50,3 +50,5 @@ gem 'ransack', github: 'activerecord-hackery/ransack', branch: 'rails-4.1'
 # gem 'debugger', group: [:development, :test]
 
 gem 'carrierwave'
+gem 'formtastic'
+gem 'formtastic-bootstrap'

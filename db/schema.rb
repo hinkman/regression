@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141003002524) do
+ActiveRecord::Schema.define(version: 20141006183633) do
 
   create_table "actions", force: true do |t|
     t.string   "action"
@@ -62,10 +62,10 @@ ActiveRecord::Schema.define(version: 20141003002524) do
   create_table "results", force: true do |t|
     t.integer  "diff_id"
     t.text     "path"
-    t.boolean  "is_complete"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_active"
+    t.integer  "pct_complete"
   end
 
   add_index "results", ["diff_id"], name: "results_diff_id_fk", using: :btree
@@ -81,13 +81,5 @@ ActiveRecord::Schema.define(version: 20141003002524) do
     t.boolean  "is_active"
     t.text     "cn_strings"
   end
-
-  add_foreign_key "actions", "users", name: "actions_user_id_fk"
-
-  add_foreign_key "diffs", "config_files", name: "diffs_config_file_id_fk"
-  add_foreign_key "diffs", "file_sets", name: "diffs_left_id_fk", column: "left_id"
-  add_foreign_key "diffs", "file_sets", name: "diffs_right_id_fk", column: "right_id"
-
-  add_foreign_key "results", "diffs", name: "results_diff_id_fk"
 
 end

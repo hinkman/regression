@@ -1,8 +1,8 @@
 class DiffsController < ApplicationController
 
   before_action :set_diff, only: [:show, :edit, :update, :destroy]
-  before_action :set_config_files, only: [:new, :edit]
-  before_action :set_file_sets, only: [:new, :edit]
+  before_action :set_config_files, only: [:show, :edit, :update, :destroy]
+  before_action :set_file_sets, only: [:show, :edit, :update, :destroy]
   after_action :add_action, only: [:create, :edit, :update, :destroy]
 
   # GET /diffs
@@ -31,6 +31,7 @@ class DiffsController < ApplicationController
   def create
     @diff = Diff.new(diff_params)
     @diff.is_active = true
+    @diff.pct_complete = 0
 
     respond_to do |format|
       if @diff.save
