@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141006183633) do
+ActiveRecord::Schema.define(version: 20141008190532) do
 
   create_table "actions", force: true do |t|
     t.string   "action"
@@ -28,11 +28,14 @@ ActiveRecord::Schema.define(version: 20141006183633) do
   create_table "config_files", force: true do |t|
     t.string   "name"
     t.text     "description"
-    t.text     "path"
     t.integer  "version"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_active"
+    t.string   "cf_file_name"
+    t.string   "cf_content_type"
+    t.integer  "cf_file_size"
+    t.datetime "cf_updated_at"
   end
 
   create_table "diffs", force: true do |t|
@@ -53,10 +56,13 @@ ActiveRecord::Schema.define(version: 20141006183633) do
   create_table "file_sets", force: true do |t|
     t.string   "name"
     t.text     "description"
-    t.string   "path"
     t.boolean  "is_active"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "fs_file_name"
+    t.string   "fs_content_type"
+    t.integer  "fs_file_size"
+    t.datetime "fs_updated_at"
   end
 
   create_table "results", force: true do |t|

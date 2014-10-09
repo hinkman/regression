@@ -12,7 +12,7 @@
     <tr>
       <th><%= sort_link(@q,:name, 'Name')%></th>
       <th><%= sort_link(@q,:description,'Description')%></th>
-      <th><%= sort_link(@q,'path','Path')%></th>
+      <th><%= sort_link(@q,'fs','File Set')%></th>
       <th>Used in Left Diff</th>
       <th>Used in Right Diff</th>
     </tr>
@@ -23,7 +23,7 @@
       <tr>
         <td><%= file_set.name %></td>
         <td><%= file_set.description %></td>
-        <td><%= file_set.path.file.identifier %></td>
+        <td><%= file_set.fs_file_name %></td>
         <td>
           <% file_set.diffs_left.each do |diff| %>
             <%= diff.title %><br>

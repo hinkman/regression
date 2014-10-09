@@ -11,9 +11,9 @@
 </p>
 
 <p>
-  <strong>Path:</strong>
-  <%= @config_file.path %>
+  <strong>File:</strong>
+  <%= @config_file.cf_file_name %>
 </p>
 
-<%= link_to 'Edit', edit_config_file_path(@config_file) %> |
-<%= link_to 'Back', config_files_path %>
+<%= link_to "Edit", edit_config_file_path(@config_file), {:class=>"btn btn-default btn-primary"} %>
+<%= link_to "Back To List", config_files_path, {:class=>"btn btn-default btn-warning"} %>

@@ -1,8 +1,9 @@
 class ConfigFile < ActiveRecord::Base
-  mount_uploader :path, ConfigFileUploader
+  has_attached_file  :cf
 
-  validates_presence_of :name, :path
+  validates_presence_of :name
   validates_uniqueness_of :name
+  validates_attachment :cf, :presence => true, content_type: { :content_type => /\Atext\/.*\Z/ }
 
   has_many :diffs
 

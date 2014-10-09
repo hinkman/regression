@@ -1,36 +1,32 @@
-<%= form_for(@config_file) do |f| %>
-  <% if @config_file.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@config_file.errors.count, "error") %> prohibited this config_file from being saved:</h2>
+<%= simple_form_for @config_file, html: { class: 'form-horizontal', :multipart => true },
+  wrapper: :horizontal_form, wrapper_mappings: { file: :horizontal_form_b } do |f| %>
+  <div class="col-md-6">
+      <%= f.error_notification %>
 
-      <ul>
-        <% @config_file.errors.full_messages.each do |message| %>
-              <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+      <div class="form-inputs">
+        <%= f.input :name, placeholder: 'Title'  %>
+        <%= f.input :description, placeholder: 'Description'  %>
 
-  <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :description %><br>
-    <%= f.text_area :description %>
-  </div>
-  <div class="field">
-    <%= f.label :path %><br>
+        <div class="form-group string optional disabled config_file_cf">
+          <label class="string optional col-sm-3 control-label" for="config_file_cf">Config File</label>
+          <div class="col-sm-9">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <span class="btn btn-primary btn-file">
+                  Browse&hellip; <input  name="config_file[cf]" type="file">
+                </span>
+              </span>
+              <input type="text" class="form-control" value="<%= @config_file.cf_file_name %>" readonly>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <!--We don't allow changing the file_set so if exists, just display.-->
-    <% if @config_file.path? %>
-      <%= @config_file.path.file.identifier %>
-    <% else %>
-      <%= f.file_field :path %>
-      <%= f.hidden_field :path_cache %>
-    <% end %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
+      <div class="form-actions">
+        <%= f.button :submit, {:class=>"btn btn-default btn-primary"} %>
+        <%= link_to "Cancel", config_files_path, {:class=>"btn btn-default btn-warning"} %>
+      </div>
   </div>
 <% end %>
+
+

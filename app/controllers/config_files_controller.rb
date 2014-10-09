@@ -74,7 +74,7 @@ class ConfigFilesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def config_file_params
-      params.require(:config_file).permit(:name, :description, :path)
+      params.require(:config_file).permit(:name, :description, :cf)
     end
 
     def add_action
