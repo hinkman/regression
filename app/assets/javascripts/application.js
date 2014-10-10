@@ -38,3 +38,12 @@ $(document).ready( function() {
         
     });
 });
+
+$(document).on('click','a[data-popup]', function() { 
+    var NWin = window.open($(this).attr('href'), '', 'scrollbars=1,height=400,width=400');
+     if (window.focus)
+     {
+       NWin.focus();
+     }
+     return false; 
+ });
