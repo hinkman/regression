@@ -3,7 +3,11 @@ Rails.application.routes.draw do
   resources :file_sets
   resources :sessions
   resources :users
-  resources :diffs
+  resources :diffs do
+    member do
+      get :run
+    end
+  end
 
 
   match "/signout" => "sessions#destroy", via: [:get, :post], as: :signout

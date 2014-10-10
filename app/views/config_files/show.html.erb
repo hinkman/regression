@@ -1,19 +1,20 @@
-<p id="notice"><%= notice %></p>
+<%= simple_form_for @config_file, html: { class: 'form-horizontal', :multipart => true },
+  wrapper: :horizontal_form do |f| %>
+  <div class="col-md-6">
+      <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @config_file.name %>
-</p>
+      <div class="form-inputs">
+        <%= f.input :name, placeholder: 'Title', disabled: true  %>
+        <%= f.input :description, placeholder: 'Description', disabled: true  %>
+        <%= f.input :cf, as: :string, placeholder: 'Config File Name', label: 'Config File',
+                input_html: { value: @config_file.cf_file_name }, disabled: true  %>
 
-<p>
-  <strong>Description:</strong>
-  <%= @config_file.description %>
-</p>
+      </div>
 
-<p>
-  <strong>File:</strong>
-  <%= @config_file.cf_file_name %>
-</p>
+      <div class="form-actions">
+        <%= link_to "Edit", edit_config_file_path(@config_file), {:class=>"btn btn-default btn-primary"} %>
+        <%= link_to "Back To List", config_files_path, {:class=>"btn btn-default btn-warning"} %>
+      </div>
+  </div>
+<% end %>
 
-<%= link_to "Edit", edit_config_file_path(@config_file), {:class=>"btn btn-default btn-primary"} %>
-<%= link_to "Back To List", config_files_path, {:class=>"btn btn-default btn-warning"} %>

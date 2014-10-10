@@ -1,9 +1,9 @@
 class DiffsController < ApplicationController
 
-  before_action :set_diff, only: [:show, :edit, :update, :destroy]
+  before_action :set_diff, only: [:run, :show, :edit, :update, :destroy]
   before_action :set_config_files, only: [:show, :edit, :update, :destroy]
   before_action :set_file_sets, only: [:show, :edit, :update, :destroy]
-  after_action :add_action, only: [:create, :edit, :update, :destroy]
+  after_action :add_action, only: [:run, :create, :edit, :update, :destroy]
 
   # GET /diffs
   # GET /diffs.json
@@ -26,12 +26,21 @@ class DiffsController < ApplicationController
   def edit
   end
 
+  def run
+    @result=Result.new(:diff_id => @diff.id, :is_active => true, :pct_complete => 0)
+    @result.save
+    respond_to do |format|
+      # format.html { redirect_to show_diff_path, status: :ok, location: @diff, notice: 'run was called.' }
+      format.html { redirect_to @diff, notice: @result.id }
+      format.json { head :no_content }
+    end
+  end
+
   # POST /diffs
   # POST /diffs.json
   def create
     @diff = Diff.new(diff_params)
     @diff.is_active = true
-    @diff.pct_complete = 0
 
     respond_to do |format|
       if @diff.save

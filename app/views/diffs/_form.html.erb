@@ -1,37 +1,20 @@
-<%= form_for(@diff) do |f| %>
-  <% if @diff.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@diff.errors.count, "error") %> prohibited this diff from being saved:</h2>
+<%= simple_form_for @diff, html: { class: 'form-horizontal', :multipart => true },
+  wrapper: :horizontal_form do |f| %>
+  <div class="col-md-6">
+      <%= f.error_notification %>
 
-      <ul>
-      <% @diff.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+      <div class="form-inputs">
+        <%= f.input :title, placeholder: 'Title'  %>
+        <%= f.input :description, placeholder: 'Description'  %>
+        <%= f.association :config_file, label: 'Config File' %>
+        <%= f.association :left_file_set, label: 'Left File Set' %>
+        <%= f.association :right_file_set, label: 'Right File Set' %>
+      </div>
 
-  <div class="field">
-    <%= f.label :title %><br>
-    <%= f.text_field :title %>
-  </div>
-  <div class="field">
-    <%= f.label :description %><br>
-    <%= f.text_area :description %>
-  </div>
-  <div class="field">
-    <%= f.label :config_file_id %><br>
-    <%= f.collection_select(:config_file_id, @config_files, :id, :name, :include_blank => "Please select a config file...") %>
-  </div>
-  <div class="field">
-    <%= f.label :left_id %><br>
-    <%= f.collection_select(:left_id, @file_sets, :id, :name, :include_blank => "Please select a file set...") %>
-  </div>
-  <div class="field">
-    <%= f.label :right_id %><br>
-    <%= f.collection_select(:right_id, @file_sets, :id, :name, :include_blank => "Please select a file set...") %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
+      <div class="form-actions">
+        <%= f.button :submit, {:class=>"btn btn-primary"} %>
+        <%= link_to "Cancel", diffs_path, {:class=>"btn btn-warning"} %>
+      </div>
   </div>
 <% end %>
+

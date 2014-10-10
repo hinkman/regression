@@ -74,7 +74,7 @@ class FileSetsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def file_set_params
-      params.require(:file_set).permit(:name, :description, :path)
+      params.require(:file_set).permit(:name, :description, :fs)
     end
 
     def add_action
