@@ -21,6 +21,7 @@ class FileSetsController < ApplicationController
 
   # GET /file_sets/1/edit
   def edit
+    session[:return_to] = request.referer
   end
 
   # POST /file_sets
@@ -31,7 +32,7 @@ class FileSetsController < ApplicationController
 
     respond_to do |format|
       if @file_set.save
-        format.html { redirect_to @file_set, notice: 'File set was successfully created.' }
+        format.html { redirect_to((session.delete(:return_to) || @file_set), notice: 'File set was successfully created.') }
         format.json { render :show, status: :created, location: @file_set }
       else
         format.html { render :new }
@@ -45,7 +46,7 @@ class FileSetsController < ApplicationController
   def update
     respond_to do |format|
       if @file_set.update(file_set_params)
-        format.html { redirect_to @file_set, notice: 'File set was successfully updated.' }
+        format.html { redirect_to((session.delete(:return_to) || @file_set), notice: 'File set successfully updated.') }
         format.json { render :show, status: :ok, location: @file_set }
       else
         format.html { render :edit }
@@ -78,6 +79,6 @@ class FileSetsController < ApplicationController
     end
 
     def add_action
-      Action.create(:action => action_name, :item => 'file_set', :user_id => @current_user.id, :item_id => @file_set.id)
+      Action.create(:action => action_name, :item => 'file_set', :user_id => 1, :item_id => @file_set.id)
     end
 end

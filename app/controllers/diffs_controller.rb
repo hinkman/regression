@@ -24,6 +24,7 @@ class DiffsController < ApplicationController
 
   # GET /diffs/1/edit
   def edit
+    session[:return_to] = request.referer
   end
 
   def run
@@ -44,7 +45,7 @@ class DiffsController < ApplicationController
 
     respond_to do |format|
       if @diff.save
-        format.html { redirect_to @diff, notice: 'Diff was successfully created.' }
+        format.html { redirect_to((session.delete(:return_to) || @diff), notice: 'Diff was successfully created.') }
         format.json { render :show, status: :created, location: @diff }
       else
         format.html { render :new }
@@ -58,7 +59,7 @@ class DiffsController < ApplicationController
   def update
     respond_to do |format|
       if @diff.update(diff_params)
-        format.html { redirect_to @diff, notice: 'Diff was successfully updated.' }
+        format.html { redirect_to((session.delete(:return_to) || @diff), notice: 'Diff was successfully updated.') }
         format.json { render :show, status: :ok, location: @diff }
       else
         format.html { render :edit }

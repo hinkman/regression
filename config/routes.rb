@@ -14,7 +14,8 @@ Rails.application.routes.draw do
   match "/signin" => "sessions#new", via: [:get, :post], as: :signin
   match "/adauth" => "sessions#create", via: [:get, :post]
 
-  root :to => "diffs#index"
+  root "diffs#index"
+  get '/home' => "diffs#index"
 
   get ':controller(/:action(/:id(.:format)))'
 

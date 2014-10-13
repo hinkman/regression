@@ -21,6 +21,7 @@ class ConfigFilesController < ApplicationController
 
   # GET /config_files/1/edit
   def edit
+    session[:return_to] = request.referer
   end
 
   # POST /config_files
@@ -31,7 +32,7 @@ class ConfigFilesController < ApplicationController
 
     respond_to do |format|
       if @config_file.save
-        format.html { redirect_to @config_file, notice: 'Config file was successfully created.' }
+        format.html { redirect_to((session.delete(:return_to) || @config_file), notice: 'Config file was successfully created.') }
         format.json { render :show, status: :created, location: @config_file }
       else
         format.html { render :new }
@@ -45,7 +46,7 @@ class ConfigFilesController < ApplicationController
   def update
     respond_to do |format|
       if @config_file.update(config_file_params)
-        format.html { redirect_to @config_file, notice: 'Config file was successfully updated.' }
+        format.html { redirect_to((session.delete(:return_to) || @config_file), notice: 'Config file was successfully updated.') }
         format.json { render :show, status: :ok, location: @config_file }
       else
         format.html { render :edit }

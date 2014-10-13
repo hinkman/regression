@@ -11,9 +11,9 @@ class SessionsController < ApplicationController
         	user = User.return_and_create_from_adauth(ldap_user)
         	session[:user_id] = user.id
         	redirect_to root_path
-    	else
+   	else
         	redirect_to signin_path, :alert => "Invalid Login"
-    	end
+   	end
 	end
 
 	def destroy

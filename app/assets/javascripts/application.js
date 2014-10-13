@@ -26,24 +26,24 @@ $(document).on('change', '.btn-file :file', function() {
 
 $(document).ready( function() {
     $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
-        
+
         var input = $(this).parents('.input-group').find(':text'),
             log = numFiles > 1 ? numFiles + ' files selected' : label;
-        
+
         if( input.length ) {
             input.val(log);
         } else {
             if( log ) alert(log);
         }
-        
+
     });
 });
 
-$(document).on('click','a[data-popup]', function() { 
-    var NWin = window.open($(this).attr('href'), '', 'scrollbars=1,height=400,width=400');
-     if (window.focus)
-     {
-       NWin.focus();
-     }
-     return false; 
- });
+// $(document).on('click','a[data-popup]', function() {
+//     var NWin = window.open($(this).attr('href'), '', 'scrollbars=1,height=400,width=400');
+//      if (window.focus)
+//      {
+//        NWin.focus();
+//      }
+//      return false;
+//  });

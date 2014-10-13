@@ -6,21 +6,6 @@
       <div class="form-inputs">
         <%= f.input :title, placeholder: 'Title'  %>
         <%= f.input :description, placeholder: 'Description'  %>
-        <div class="form-group select optional diff_config_file">
-          <label class="select optional col-sm-3 control-label" for="diff_config_file_id">Config File</label>
-          <div class="col-sm-9">
-            <div class="input-group">
-              <select class="select optional form-control" id="diff_config_file_id" name="diff[config_file_id]">
-                <option value=""></option>
-                <option selected="selected" value="3">one</option>
-                <option value="4">two</option>
-              </select>
-              <span class="input-group-btn">
-                <%= link_to 'Replace', edit_config_file_path(@diff.config_file_id), class: 'btn btn-primary' , 'data-popup' => true %>
-              </span>
-            </div>
-          </div>
-        </div>
         <%= f.association :config_file, label: 'Config File' %>
         <%= f.association :left_file_set, label: 'Left File Set' %>
         <%= f.association :right_file_set, label: 'Right File Set' %>
@@ -28,7 +13,7 @@
 
       <div class="form-actions">
         <%= f.button :submit, {:class=>"btn btn-primary"} %>
-        <%= link_to "Cancel", diffs_path, {:class=>"btn btn-warning"} %>
+        <%= link_to "Back", :back, {:class=>"btn btn-default btn-warning"} %>
       </div>
   </div>
 <% end %>

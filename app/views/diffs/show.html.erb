@@ -8,13 +8,22 @@
         <%= f.input :description, placeholder: 'Description', disabled: true  %>
         <%= f.association :config_file, label: 'Config File', disabled: true  %>
         <%= f.association :left_file_set, label: 'Left File Set', disabled: true  %>
-        <%= f.association :right_file_set, label: 'Right File Set', disabled: true  %>
+        <div class="form-group string optional diff_right_file_set">
+          <%= f.label :right_file_set, "Right File Set", class: 'string optional col-sm-3 control-label' %>
+          <div class="col-sm-9">
+            <div class="input-group">
+              <%= f.input_field :right_file_set, disabled: true, class: 'string optional form-control', value: @diff.right_file_set.name %>
+              <span class="input-group-btn">
+                <%= link_to 'Update Zip', edit_file_set_path(@diff.right_file_set.id), class: 'btn btn-primary' %>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="form-actions">
         <%= link_to "Run", run_diff_path(@diff), class: 'btn btn-success', data: { confirm: 'Are you sure you want this diff to start running?' } %>
         <%= link_to "Edit", edit_diff_path(@diff), class: 'btn btn-primary' %>
-        <%= link_to "Back To List", diffs_path, class: 'btn btn-warning' %>
       </div>
   </div>
 <% end %>

@@ -9,8 +9,8 @@ gem 'mysql2'
 gem 'uglifier', '>= 1.3.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
-gem 'bootstrap-sass', '~> 3.1.1.0'
-gem 'autoprefixer-rails'
+# gem 'bootstrap-sass', '~> 3.1.1.0'
+# gem 'autoprefixer-rails'
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
@@ -47,6 +47,7 @@ gem 'ransack', github: 'activerecord-hackery/ransack', branch: 'rails-4.1'
 # gem 'capistrano-rails', group: :development
 
 # Use debugger
+gem 'debase'
 # gem 'debugger', group: [:development, :test]
 
 # gem 'carrierwave'
@@ -54,3 +55,5 @@ gem 'paperclip'
 gem 'simple_form', '~> 3.1.0.rc1', github: 'plataformatec/simple_form', branch: 'master'
 # gem 'formtastic'
 # gem 'formtastic-bootstrap', github: 'mjbellantoni/formtastic-bootstrap', branch: 'master'
+gem 'rails_bootstrap_navbar'
+
