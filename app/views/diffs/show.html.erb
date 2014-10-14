@@ -1,30 +1,54 @@
-<%= simple_form_for @diff, html: { class: 'form-horizontal', :multipart => true },
-  wrapper: :horizontal_form do |f| %>
+<div class="container-fluid">
+<div class="row">
   <div class="col-md-6">
-  <p id="notice"><%= notice %></p>
+    <%= simple_form_for @diff, html: { class: 'form-horizontal', :multipart => true }, wrapper: :horizontal_form do |f| %>
 
-      <div class="form-inputs">
-        <%= f.input :title, placeholder: 'Title', disabled: true  %>
-        <%= f.input :description, placeholder: 'Description', disabled: true  %>
-        <%= f.association :config_file, label: 'Config File', disabled: true  %>
-        <%= f.association :left_file_set, label: 'Left File Set', disabled: true  %>
-        <div class="form-group string optional diff_right_file_set">
-          <%= f.label :right_file_set, "Right File Set", class: 'string optional col-sm-3 control-label' %>
-          <div class="col-sm-9">
-            <div class="input-group">
-              <%= f.input_field :right_file_set, disabled: true, class: 'string optional form-control', value: @diff.right_file_set.name %>
-              <span class="input-group-btn">
-                <%= link_to 'Update Zip', edit_file_set_path(@diff.right_file_set.id), class: 'btn btn-primary' %>
-              </span>
+        <div class="form-inputs">
+          <%= f.input :title, placeholder: 'Title', disabled: true  %>
+          <%= f.input :description, placeholder: 'Description', disabled: true  %>
+          <%= f.association :config_file, label: 'Config File', disabled: true  %>
+          <%= f.association :left_file_set, label: 'Left File Set', disabled: true  %>
+          <div class="form-group string optional diff_right_file_set">
+            <%= f.label :right_file_set, "Right File Set", class: 'string optional col-sm-3 control-label' %>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <%= f.input_field :right_file_set, disabled: true, class: 'string optional form-control', value: @diff.right_file_set.name %>
+                <span class="input-group-btn">
+                  <%= link_to 'Update Zip', edit_file_set_path(@diff.right_file_set.id), class: 'btn btn-primary' %>
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="form-actions">
-        <%= link_to "Run", run_diff_path(@diff), class: 'btn btn-success', data: { confirm: 'Are you sure you want this diff to start running?' } %>
-        <%= link_to "Edit", edit_diff_path(@diff), class: 'btn btn-primary' %>
-      </div>
+        <div class="form-actions">
+          <%= link_to "Run", run_diff_path(@diff), class: 'btn btn-success', data: { confirm: 'Are you sure you want this diff to start running?' } %>
+          <%= link_to "Edit", edit_diff_path(@diff), class: 'btn btn-primary' %>
+        </div>
+    <% end %>
   </div>
-<% end %>
 
+  <div class="col-md-4">
+      <h2 class="sub-header">Results</h2>
+
+      <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+              <th><%= sort_link(@q,:updated_at,'Last Update') %></th>
+              <th><%= sort_link(@q,:pct_complete,'% Complete')%></th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <% @results.each do |result| %>
+            <tr>
+                <td><%= result.updated_at.localtime.strftime("%F %T %Z") %></td>
+                <td><%= result.pct_complete %></td>
+            </tr>
+          <% end %>
+          </tbody>
+      </table>
+
+  </div>
+</div>
+</div>

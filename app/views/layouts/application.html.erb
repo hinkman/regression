@@ -8,18 +8,19 @@
 </head>
 <body>
 
-<%= navbar container: 'fluid' do %>
-  <%= navbar_header brand: 'Regression', brand_link: '/home' %>
-  <%= navbar_collapse do %>
-    <%= navbar_group class: 'foo', id: 'menu' do %>
-      <%= navbar_item "Diffs", '/diffs' %>
-      <%= navbar_item "File Sets", '/file_sets' %>
-      <%= navbar_item "Config Files", '/config_files' %>
+<div class="container">
+  <%= navbar container: 'fluid' do %>
+    <%= navbar_header brand: 'Regression', brand_link: '/home' %>
+    <%= navbar_collapse do %>
+      <%= navbar_group class: 'foo', id: 'menu' do %>
+        <%= navbar_item "Diffs", '/diffs' %>
+        <%= navbar_item "File Sets", '/file_sets' %>
+        <%= navbar_item "Config Files", '/config_files' %>
+      <% end %>
     <% end %>
   <% end %>
-<% end %>
 
-<%= yield %>
-
+  <%= yield %>
+</div>
 </body>
 </html>
