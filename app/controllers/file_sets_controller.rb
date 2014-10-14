@@ -79,6 +79,6 @@ class FileSetsController < ApplicationController
     end
 
     def add_action
-      Action.create(:action => action_name, :item => 'file_set', :user_id => 1, :item_id => @file_set.id)
+      Action.create(:action => action_name, :item => 'file_set', :user_id => @current_user.id, :item_id => @file_set.id)
     end
 end

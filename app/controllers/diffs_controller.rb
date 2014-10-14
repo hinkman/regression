@@ -15,8 +15,12 @@ class DiffsController < ApplicationController
   # GET /diffs/1
   # GET /diffs/1.json
   def show
-    @q = Result.search(params[:q], :diff_id => @diff.id)
+    @q = Result.search(diff_id_eq: @diff.id)
     @results = @q.result
+    respond_to do |format|
+      format.js {}
+      format.html {}
+    end
   end
 
   # GET /diffs/new
@@ -32,6 +36,9 @@ class DiffsController < ApplicationController
   def run
     @result=Result.new(:diff_id => @diff.id, :is_active => true, :pct_complete => 0)
     @result.save
+    # `(/usr/local/bin/regression_diff.pl --result_id #{@result.id} --config_file #{@diff.config_file.cf.path} --left_zip #{@diff.left_file_set.fs.path} --right_zip #{@diff.right_file_set.fs.path} --output_prefix #{@current_user.login} 2>&1 | logger -t regression) > /dev/null 2>&1 &`
+    `(/Users/hinkman/Desktop/working/perl/regression_diff.pl --result_id #{@result.id} --config_file #{@diff.config_file.cf.path} --left_zip #{@diff.left_file_set.fs.path} --right_zip #{@diff.right_file_set.fs.path} --output_prefix #{@current_user.login} 2>&1 | logger -t regression) > /dev/null 2>&1 &`
+    sleep 2
     respond_to do |format|
       # format.html { redirect_to show_diff_path, status: :ok, location: @diff, notice: 'run was called.' }
       format.html { redirect_to @diff, notice: @result.id }

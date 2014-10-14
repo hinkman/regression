@@ -35,9 +35,9 @@
             <%= diff.title %><br>
           <% end %>
         </td>
-        <td><%= link_to 'Show', file_set %></td>
-        <td><%= link_to 'Edit', edit_file_set_path(file_set) %></td>
-        <td><%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Show', file_set, class: 'btn btn-xs btn-success nounderline' %></td>
+        <td><%= link_to 'Edit', edit_file_set_path(file_set), class: 'btn btn-xs btn-primary nounderline' %></td>
+        <td><%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %></td>
       </tr>
     <% end %>
   </tbody>

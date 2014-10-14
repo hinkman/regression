@@ -29,9 +29,9 @@
             <%= diff.title %><br>
           <% end %>
         </td>
-        <td><%= link_to 'Show', config_file %></td>
-        <td><%= link_to 'Edit', edit_config_file_path(config_file) %></td>
-        <td><%= link_to 'Destroy', config_file, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Show', config_file, class: 'btn btn-xs btn-success nounderline' %></td>
+        <td><%= link_to 'Edit', edit_config_file_path(config_file), class: 'btn btn-xs btn-primary nounderline' %></td>
+        <td><%= link_to 'Destroy', config_file, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %></td>
       </tr>
     <% end %>
   </tbody>

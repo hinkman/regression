@@ -14,7 +14,7 @@
 //= require jquery_ujs
 // require turbolinks
 //= require bootstrap
-//
+//= require jasny-bootstrap
 
 
 $(document).on('change', '.btn-file :file', function() {
@@ -47,3 +47,13 @@ $(document).ready( function() {
 //      }
 //      return false;
 //  });
+
+//$(function() {
+//    $('[data-remote][data-replace]')
+//        .data('type', 'html')
+//        .live('ajax:success', function(event, data) {
+//            var $this = $(this);
+//            $($this.data('replace')).html(data);
+//            $this.trigger('ajax:replaced');
+//        });
+//});

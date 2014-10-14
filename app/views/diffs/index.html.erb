@@ -37,9 +37,9 @@
             (<%= diff.results.first.pct_complete %>%)
           <% end %>
         </td>
-        <td><%= link_to 'Show', diff %></td>
-        <td><%= link_to 'Edit', edit_diff_path(diff) %></td>
-        <td><%= link_to 'Destroy', diff, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Show', diff, class: 'btn btn-xs btn-success nounderline' %></td>
+        <td><%= link_to 'Edit', edit_diff_path(diff), class: 'btn btn-xs btn-primary nounderline' %></td>
+        <td><%= link_to 'Destroy', diff, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %></td>
       </tr>
     <% end %>
   </tbody>

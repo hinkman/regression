@@ -1,5 +1,6 @@
 /*
  *= require bootstrap
+ *= require jasny-bootstrap
 */
 
 .btn-file {
@@ -21,3 +22,6 @@
     cursor: inherit;
     display: block;
 }
+
+.nounderline{text-decoration: none !important}
+

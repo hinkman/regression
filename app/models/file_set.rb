@@ -3,7 +3,9 @@ class FileSet < ActiveRecord::Base
 
   validates_presence_of :name
   validates_uniqueness_of :name
-  validates_attachment :fs, :presence => true, content_type: { :content_type => /\Atext\/.*\Z/ }
+  validates_presence_of :fs
+  validates_attachment_file_name :fs, :matches => [/zip\Z/, /tgz\Z/]
+
 
   has_many :diffs_left, :class_name => 'Diff', :foreign_key => 'left_id'
   has_many :diffs_right, :class_name => 'Diff', :foreign_key => 'right_id'

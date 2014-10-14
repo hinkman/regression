@@ -3,7 +3,8 @@ class ConfigFile < ActiveRecord::Base
 
   validates_presence_of :name
   validates_uniqueness_of :name
-  validates_attachment :cf, :presence => true, content_type: { :content_type => /\Atext\/.*\Z/ }
+  validates_presence_of :cf
+  validates_attachment_file_name :cf, :matches => [/txt\Z/, /yml\Z/]
 
   has_many :diffs
 

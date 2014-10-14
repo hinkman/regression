@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :file_sets
   resources :sessions
   resources :users
+  resources :results, :only => [ :update, :destroy ]
   resources :diffs do
     member do
       get :run
