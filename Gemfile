@@ -14,7 +14,7 @@ gem 'sass-rails', '~> 4.0.3'
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-# gem 'therubyracer',  platforms: :ruby
+gem 'therubyracer',  platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -52,7 +52,7 @@ gem 'debase'
 
 # gem 'carrierwave'
 gem 'paperclip'
-gem 'simple_form', '~> 3.1.0.rc1', github: 'plataformatec/simple_form', branch: 'master'
+gem 'simple_form', '~> 3.1.0.rc1', git: 'https://github.com/plataformatec/simple_form.git', branch: 'master'
 # gem 'formtastic'
 # gem 'formtastic-bootstrap', github: 'mjbellantoni/formtastic-bootstrap', branch: 'master'
 gem 'rails_bootstrap_navbar'

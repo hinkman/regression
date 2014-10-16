@@ -20,8 +20,8 @@
     <data-source source="LOCAL" name="Rails regression: production" uuid="87a86cb3-3644-4af7-8918-8ce9df8cfecc">
       <driver-ref>mysql</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://10.28.2.66/regression_production</jdbc-url>
-      <user-name>regression</user-name>
+      <jdbc-url>jdbc:mysql://127.0.0.1/regression_production</jdbc-url>
+      <user-name>regression_user</user-name>
       <user-password>df96df8fdf97df8adfefdfe4dffcdff1df8ddff8dfefdfeddff8dfefdff9dff9dfe3dfe5dfe4dff5dfeedfebdffedfebdfe8dfebdff9dfefdff5dffadfebdff9dff9dffddfe5dff8dfeedf8ddff7df8adf8fdf94</user-password>
       <libraries />
     </data-source>
