@@ -58,8 +58,8 @@ class ConfigFilesController < ApplicationController
   # DELETE /config_files/1
   # DELETE /config_files/1.json
   def destroy
-    # @config_file.destroy
-    @config_file.update(is_active: false)
+    @config_file.destroy
+    # @config_file.update(is_active: false)
 
     respond_to do |format|
       format.html { redirect_to config_files_url, notice: 'Config file was successfully destroyed.' }

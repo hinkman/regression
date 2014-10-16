@@ -7,9 +7,9 @@ class FileSet < ActiveRecord::Base
   validates_attachment_file_name :fs, :matches => [/zip\Z/, /tgz\Z/]
 
 
-  has_many :diffs_left, :class_name => 'Diff', :foreign_key => 'left_id'
-  has_many :diffs_right, :class_name => 'Diff', :foreign_key => 'right_id'
+  has_many :diffs_left, :class_name => 'Diff', :foreign_key => 'left_id', :dependent => :restrict_with_error
+  has_many :diffs_right, :class_name => 'Diff', :foreign_key => 'right_id', :dependent => :restrict_with_error
 
-  default_scope lambda { where("file_sets.is_active = 1") }
+  # default_scope lambda { where("file_sets.is_active = 1") }
 
 end

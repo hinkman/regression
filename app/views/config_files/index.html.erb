@@ -1,4 +1,5 @@
 <h1>Listing config_files</h1>
+<p id="notice"><%= notice %></p>
 
 <%= search_form_for @q do |f| %>
   <%= f.label "Search" %>
@@ -12,7 +13,7 @@
     <tr>
       <th><%= sort_link(@q,:name, 'Name')%></th>
       <th><%= sort_link(@q,:description,'Description')%></th>
-      <th><%= sort_link(@q,'cf','Config File')%></th>
+      <th><%= sort_link(@q,'cf_file_name','Config File Name')%></th>
       <th>Used in Diff</th>
       <th colspan="3"></th>
     </tr>
@@ -26,12 +27,18 @@
         <td><%= config_file.cf_file_name %></td>
         <td>
           <% config_file.diffs.each do |diff| %>
-            <%= diff.title %><br>
+            <%= link_to diff.title, diff_path(diff) %><br>
           <% end %>
         </td>
         <td><%= link_to 'Show', config_file, class: 'btn btn-xs btn-success nounderline' %></td>
         <td><%= link_to 'Edit', edit_config_file_path(config_file), class: 'btn btn-xs btn-primary nounderline' %></td>
-        <td><%= link_to 'Destroy', config_file, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %></td>
+        <td>
+          <% if config_file.can_destroy? %>
+            <%= link_to 'Destroy', config_file, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %>
+          <% else %>
+            <%= link_to 'Destroy', config_file, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-default disabled nounderline' %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>

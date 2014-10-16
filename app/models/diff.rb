@@ -8,7 +8,7 @@ class Diff < ActiveRecord::Base
   belongs_to :left_file_set, :class_name => 'FileSet', :foreign_key => 'left_id'
   belongs_to :right_file_set, :class_name => 'FileSet', :foreign_key => 'right_id'
 
-  default_scope lambda { where("diffs.is_active = 1") }
+  # default_scope lambda { where("diffs.is_active = 1") }
 
   def diff_file_sets
     if (self.left_id == self.right_id)

@@ -6,7 +6,7 @@ class ConfigFile < ActiveRecord::Base
   validates_presence_of :cf
   validates_attachment_file_name :cf, :matches => [/txt\Z/, /yml\Z/]
 
-  has_many :diffs
+  has_many :diffs, :dependent => :restrict_with_error
 
-  default_scope lambda { where("config_files.is_active = 1") }
+  # default_scope lambda { where("config_files.is_active = 1") }
 end

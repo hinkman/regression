@@ -21,7 +21,7 @@ class ResultsController < ApplicationController
   # DELETE /diffs/1
   # DELETE /diffs/1.json
   def destroy
-    @result.update(is_active: false)
+    @result.destroy
     respond_to do |format|
       format.html { redirect_to request.referer, notice: 'Result was successfully destroyed.' }
       format.json { head :no_content }

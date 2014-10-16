@@ -58,8 +58,8 @@ class FileSetsController < ApplicationController
   # DELETE /file_sets/1
   # DELETE /file_sets/1.json
   def destroy
-    # @file_set.destroy
-    @file_set.update(is_active: false)
+    @file_set.destroy
+    # @file_set.update(is_active: false)
 
     respond_to do |format|
       format.html { redirect_to file_sets_url, notice: 'File set was successfully destroyed.' }

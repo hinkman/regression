@@ -3,6 +3,6 @@ class Result < ActiveRecord::Base
 
   belongs_to :diff
 
-  default_scope lambda { where("results.is_active = 1") }
+  # default_scope lambda { where("results.is_active = 1") }
 
 end

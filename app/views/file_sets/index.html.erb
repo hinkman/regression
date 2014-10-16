@@ -1,5 +1,5 @@
 <h1>Listing file_sets</h1>
-<p id="notice"><%= @notice %></p>
+<p id="notice"><%= notice %></p>
 
 <%= search_form_for @q do |f| %>
   <%= f.label "Search" %>
@@ -13,7 +13,7 @@
     <tr>
       <th><%= sort_link(@q,:name, 'Name')%></th>
       <th><%= sort_link(@q,:description,'Description')%></th>
-      <th><%= sort_link(@q,'fs','File Set')%></th>
+      <th><%= sort_link(@q,'fs_file_name','File Name')%></th>
       <th>Used in Left Diff</th>
       <th>Used in Right Diff</th>
     </tr>
@@ -27,17 +27,23 @@
         <td><%= file_set.fs_file_name %></td>
         <td>
           <% file_set.diffs_left.each do |diff| %>
-            <%= diff.title %><br>
+              <%= link_to diff.title, diff_path(diff) %><br>
           <% end %>
         </td>
         <td>
           <% file_set.diffs_right.each do |diff| %>
-            <%= diff.title %><br>
+              <%= link_to diff.title, diff_path(diff) %><br>
           <% end %>
         </td>
         <td><%= link_to 'Show', file_set, class: 'btn btn-xs btn-success nounderline' %></td>
         <td><%= link_to 'Edit', edit_file_set_path(file_set), class: 'btn btn-xs btn-primary nounderline' %></td>
-        <td><%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %></td>
+        <td>
+          <% if file_set.can_destroy? %>
+            <%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %>
+          <% else %>
+            <%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-default disabled nounderline' %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>
