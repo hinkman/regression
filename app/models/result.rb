@@ -3,7 +3,7 @@ class Result < ActiveRecord::Base
 
   belongs_to :diff
 
-  # default_scope lambda { where("results.is_active = 1") }
+  default_scope lambda { order("updated_at desc") }
   scope :where_diff_id, lambda { |term| where("diff_id = ?", term) }
 
 end
