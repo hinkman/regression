@@ -9,7 +9,7 @@ class DiffsController < ApplicationController
   # GET /diffs.json
   def index
     @q = Diff.search(params[:q])
-    @diffs = @q.result.includes(:config_file)
+    @diffs = @q.result.includes(:config_file, :left_file_set, :right_file_set, :results)
   end
 
   # GET /diffs/1

@@ -9,40 +9,44 @@
 <% end %>
 
 <table class="table table-bordered table-striped">
-  <thead>
+    <thead>
     <tr>
-      <th><%= sort_link(@q,:title, 'Title')%></th>
-      <th><%= sort_link(@q,:description,'Description')%></th>
-      <th><%= sort_link(@q,'config_file.name','Config File')%></th>
-      <th><%= sort_link(@q,'left_file_set.name','Left File Set')%></th>
-      <th><%= sort_link(@q,'right_file_set.name','Right File Set')%></th>
-      <th><%= sort_link(@q,'results.updated_at','Last Result') %></th>
-      <th colspan="3"></th>
+        <th><%= sort_link(@q,:title, 'Title')%></th>
+        <th><%= sort_link(@q,:description,'Description')%></th>
+        <th>
+            C: <%= sort_link(@q,:config_file_name,'Config File')%><br>
+            L: <%= sort_link(@q,:left_file_set_name,'Left File Set')%><br>
+            R: <%= sort_link(@q,:right_file_set_name,'Right File Set')%>
+        </th>
+        <th><%= sort_link(@q,:results_updated_at,'Last Result') %></th>
+        <th colspan="3"></th>
     </tr>
-  </thead>
+    </thead>
 
-  <tbody>
+    <tbody>
     <% @diffs.each do |diff| %>
       <tr>
-        <td><%= diff.title %></td>
-        <td><%= diff.description %></td>
-        <td><%= diff.config_file.name %></td>
-        <td><%= diff.left_file_set.name %></td>
-        <td><%= diff.right_file_set.name %></td>
-        <td>
-          <% if diff.results.first.nil? %>
-            &nbsp;
-          <% else %>
-            <%= diff.results.first.updated_at.localtime.strftime("%F %T %Z") %>
-            (<%= diff.results.first.pct_complete %>%)
-          <% end %>
-        </td>
-        <td><%= link_to 'Show', diff, class: 'btn btn-xs btn-success nounderline' %></td>
-        <td><%= link_to 'Edit', edit_diff_path(diff), class: 'btn btn-xs btn-primary nounderline' %></td>
-        <td><%= link_to 'Destroy', diff, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %></td>
+          <td><%= diff.title %></td>
+          <td><%= diff.description %></td>
+          <td>
+              C: <%= link_to diff.config_file.name, config_file_path(diff.config_file) %><br>
+              L: <%= link_to diff.left_file_set.name, file_set_path(diff.left_file_set) %><br>
+              R: <%= link_to diff.right_file_set.name, file_set_path(diff.right_file_set) %>
+          </td>
+          <td>
+              <% if diff.results.first.nil? %>
+                &nbsp;
+              <% else %>
+                <%= diff.results.first.updated_at.localtime.strftime("%F %T %Z") %>
+                (<%= diff.results.first.pct_complete %>%)
+              <% end %>
+          </td>
+          <td><%= link_to 'Show', diff, class: 'btn btn-xs btn-success nounderline' %></td>
+          <td><%= link_to 'Edit', edit_diff_path(diff), class: 'btn btn-xs btn-primary nounderline' %></td>
+          <td><%= link_to 'Destroy', diff, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %></td>
       </tr>
     <% end %>
-  </tbody>
+    </tbody>
 </table>
 
 <br>

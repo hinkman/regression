@@ -4,51 +4,50 @@
 <%= search_form_for @q do |f| %>
   <%= f.label "Search" %>
   <%= f.search_field :name_or_description_or_diffs_left_title_or_diffs_right_title_cont %>
-
   <%= f.submit "search" %>
 <% end %>
 
 <table class="table table-bordered table-striped">
-  <thead>
+    <thead>
     <tr>
-      <th><%= sort_link(@q,:name, 'Name')%></th>
-      <th><%= sort_link(@q,:description,'Description')%></th>
-      <th><%= sort_link(@q,'fs_file_name','File Name')%></th>
-      <th><%= sort_link(@q,:updated_at,'Last Updated')%></th>
-      <th>Used in Left Diff</th>
-      <th>Used in Right Diff</th>
+        <th><%= sort_link(@q,:name, 'Name')%></th>
+        <th><%= sort_link(@q,:description,'Description')%></th>
+        <th>
+            <%= sort_link(@q,'fs_file_name','F: File Name')%><br>
+            <%= sort_link(@q,:diffs_left_title,'L: Used in Left Diff')%><br>
+            <%= sort_link(@q,:diffs_right_title,'R: Used in Right Diff')%>
+        </th>
+        <th><%= sort_link(@q,:updated_at,'Last Updated')%></th>
     </tr>
-  </thead>
+    </thead>
 
-  <tbody>
+    <tbody>
     <% @file_sets.each do |file_set| %>
       <tr>
-        <td><%= file_set.name %></td>
-        <td><%= file_set.description %></td>
-        <td><%= file_set.fs_file_name %></td>
-        <td><%= file_set.updated_at.localtime.strftime("%F %T %Z") %></td>
-        <td>
-          <% file_set.diffs_left.each do |diff| %>
-              <%= link_to diff.title, diff_path(diff) %><br>
-          <% end %>
-        </td>
-        <td>
-          <% file_set.diffs_right.each do |diff| %>
-              <%= link_to diff.title, diff_path(diff) %><br>
-          <% end %>
-        </td>
-        <td><%= link_to 'Show', file_set, class: 'btn btn-xs btn-success nounderline' %></td>
-        <td><%= link_to 'Edit', edit_file_set_path(file_set), class: 'btn btn-xs btn-primary nounderline' %></td>
-        <td>
-          <% if file_set.can_destroy? %>
-            <%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %>
-          <% else %>
-            <%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-default disabled nounderline' %>
-          <% end %>
-        </td>
+          <td><%= file_set.name %></td>
+          <td><%= file_set.description %></td>
+          <td>
+              F: <%= file_set.fs_file_name %><br>
+              L: <% file_set.diffs_left.each do |diff| %>
+                <%= link_to diff.title, diff_path(diff) %>
+              <% end %><br>
+              R: <% file_set.diffs_right.each do |diff| %>
+                <%= link_to diff.title, diff_path(diff) %>
+              <% end %>
+          </td>
+          <td><%= file_set.updated_at.localtime.strftime("%F %T %Z") %></td>
+          <td><%= link_to 'Show', file_set, class: 'btn btn-xs btn-success nounderline' %></td>
+          <td><%= link_to 'Edit', edit_file_set_path(file_set), class: 'btn btn-xs btn-primary nounderline' %></td>
+          <td>
+              <% if file_set.can_destroy? %>
+                <%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %>
+              <% else %>
+                <%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-default disabled nounderline' %>
+              <% end %>
+          </td>
       </tr>
     <% end %>
-  </tbody>
+    </tbody>
 </table>
 
 <br>
