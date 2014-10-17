@@ -15,7 +15,7 @@ class DiffsController < ApplicationController
   # GET /diffs/1
   # GET /diffs/1.json
   def show
-    @q = Result.search(diff_id_eq: @diff.id)
+    @q = Result.where_diff_id(@diff.id).search(params[:q])
     @working_results = @q.result
     respond_to do |format|
       format.js {}
