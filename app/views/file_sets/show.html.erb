@@ -1,20 +1,20 @@
+
 <%= simple_form_for @file_set, html: { class: 'form-horizontal', :multipart => true },
-  wrapper: :horizontal_form do |f| %>
+                    wrapper: :horizontal_form do |f| %>
   <div class="col-md-6">
-  <p id="notice"><%= @notice %><%= notice %></p>
+      <p id="notice"><%= @notice %><%= notice %></p>
 
       <div class="form-inputs">
-        <%= f.input :name, placeholder: 'Title', disabled: true  %>
-        <%= f.input :description, placeholder: 'Description', disabled: true  %>
-        <%= f.input :fs, as: :string, placeholder: 'File Set Name', label: 'File Set',
-                input_html: { value: @file_set.fs_file_name }, disabled: true  %>
+          <%= f.input :name, placeholder: 'Title', disabled: true  %>
+          <%= f.input :description, placeholder: 'Description', disabled: true  %>
+          <%= f.input :fs, as: :string, placeholder: 'File Set Name', label: 'File Set',
+                      input_html: { value: @file_set.fs_file_name }, disabled: true  %>
 
       </div>
 
       <div class="form-actions">
-        <%= link_to "Edit", edit_file_set_path(@file_set), {:class=>"btn btn-default btn-primary"} %>
-        <%= link_to "Back To List", file_sets_path, {:class=>"btn btn-default btn-warning"} %>
+          <%= link_to "Edit", edit_file_set_path(@file_set), {:class=>"btn btn-default btn-primary"} %>
+          <%= link_to "Back", :back, {:class=>"btn btn-default btn-warning"} %>
       </div>
   </div>
 <% end %>
-

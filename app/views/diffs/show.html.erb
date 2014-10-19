@@ -39,9 +39,9 @@
           </tr>
           </thead>
 
-          <tbody data-link="row" class="rowlink">
+          <tbody>
           <% @working_results.each do |result| %>
-            <tr>
+            <tr data-link="row" class="rowlink">
                 <td id="result_cell"><%= link_to result.updated_at.localtime.strftime("%F %T %Z"), result.path %></td>
                 <td><%= result.pct_complete %></td>
                 <td class="rowlink-skip"><%= link_to "Destroy", result, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %></td>

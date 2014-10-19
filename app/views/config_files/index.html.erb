@@ -8,33 +8,41 @@
   <%= f.submit "search" %>
 <% end %>
 
-<table class="table table-bordered table-striped">
+<table class="table table-bordered table-striped table-hover">
   <thead>
     <tr>
       <th><%= sort_link(@q,:name, 'Name')%></th>
-      <th><%= sort_link(@q,:description,'Description')%></th>
       <th><%= sort_link(@q,'cf_file_name','Config File Name')%></th>
       <th><%= sort_link(@q,:updated_at,'Last Updated')%></th>
       <th>Used in Diff</th>
-      <th colspan="3"></th>
+      <th></th>
     </tr>
   </thead>
 
   <tbody>
     <% @config_files.each do |config_file| %>
-      <tr>
-        <td><%= config_file.name %></td>
-        <td><%= config_file.description %></td>
+      <tr data-link="row" class="rowlink">
+        <td><%= link_to config_file.name, config_file %><br>
+            <div class="bs-component">
+                <% if config_file.description.empty? %>
+                  <button title="" data-original-title="" type="button" class="btn btn-xs btn-default rowlink-skip" data-container="body" data-toggle="popover" data-placement="right" data-content="<%= config_file.description %>">
+                      No Description
+                  </button>
+                <% else %>
+                  <button title="" data-original-title="" type="button" class="btn btn-xs btn-primary rowlink-skip" data-container="body" data-toggle="popover" data-placement="right" data-content="<%= config_file.description %>">
+                      Click For Description
+                  </button>
+                <% end %>
+            </div>
+        </td>
         <td><%= config_file.cf_file_name %></td>
         <td><%= config_file.updated_at.localtime.strftime("%F %T %Z") %></td>
         <td>
           <% config_file.diffs.each do |diff| %>
-            <%= link_to diff.title, diff_path(diff) %><br>
+            <%= link_to diff.title, diff_path(diff), class: 'rowlink-skip underline'  %><br>
           <% end %>
         </td>
-        <td><%= link_to 'Show', config_file, class: 'btn btn-xs btn-success nounderline' %></td>
-        <td><%= link_to 'Edit', edit_config_file_path(config_file), class: 'btn btn-xs btn-primary nounderline' %></td>
-        <td>
+        <td class="rowlink-skip">
           <% if config_file.can_destroy? %>
             <%= link_to 'Destroy', config_file, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %>
           <% else %>
@@ -49,3 +57,9 @@
 <br>
 
 <%= link_to 'New Config file', new_config_file_path %>
+<script>
+  (function(){
+    $('.bs-component [data-toggle="popover"]').popover();
+    $('.bs-component [data-toggle="tooltip"]').tooltip();
+  })();
+</script>
