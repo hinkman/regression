@@ -9,7 +9,8 @@ class DiffsController < ApplicationController
   # GET /diffs.json
   def index
     @q = Diff.search(params[:q])
-    @diffs = @q.result.includes(:config_file, :left_file_set, :right_file_set, :results)
+    # @notice =  params[:q]
+    @diffs = @q.result.includes(:config_file, :left_file_set, :right_file_set)
   end
 
   # GET /diffs/1
@@ -36,8 +37,7 @@ class DiffsController < ApplicationController
   def run
     @working_result=Result.new(:diff_id => @diff.id, :is_active => true, :pct_complete => 0)
     @working_result.save
-    # `(/Users/hinkman/Desktop/working/perl/regression_diff.pl --result_id #{@working_result.id} --config_file #{@diff.config_file.cf.path} --left_zip #{@diff.left_file_set.fs.path} --right_zip #{@diff.right_file_set.fs.path} --output_prefix #{@current_user.login} 2>&1 | logger -t regression) > /dev/null 2>&1 &`
-    `(/usr/local/bin/regression_diff.pl --result_id #{@working_result.id} --config_file #{@diff.config_file.cf.path} --left_zip #{@diff.left_file_set.fs.path} --right_zip #{@diff.right_file_set.fs.path} --output_prefix #{@current_user.login} 2>&1 | logger -t regression) > /dev/null 2>&1 &`
+    `(./bin/regression_diff.pl --result_id #{@working_result.id} --config_file #{@diff.config_file.cf.path} --left_zip #{@diff.left_file_set.fs.path} --right_zip #{@diff.right_file_set.fs.path} --output_prefix #{@current_user.login} 2>&1 | logger -t regression) > /dev/null 2>&1 &`
     sleep 2
     respond_to do |format|
       # format.html { redirect_to show_diff_path, status: :ok, location: @diff, notice: 'run was called.' }

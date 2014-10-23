@@ -2,10 +2,10 @@
   <p id="notice"><%= notice %></p>
 
 <%= search_form_for @q do |f| %>
-  <%= f.label "Search" %>
+  <%= f.label 'Search' %>
   <%= f.search_field :title_or_description_or_config_file_name_or_right_file_set_name_or_left_file_set_name_cont %>
 
-  <%= f.submit "search" %>
+  <%= f.submit 'search' %>
 <% end %>
 
 <table class="table table-bordered table-striped table-hover">
@@ -24,7 +24,7 @@
 
     <tbody>
     <% @diffs.each do |diff| %>
-      <tr data-link="row" class="rowlink">
+      <tr data-link="row" class='rowlink'>
           <td><%= link_to diff.title, diff %><br>
               <div class="bs-component">
                   <% if diff.description.empty? %>
