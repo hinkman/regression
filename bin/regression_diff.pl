@@ -1,5 +1,5 @@
-#!/Users/hinkman/perl5/perlbrew/perls/perl-5.16.0/bin/perl -w
 #!/opt/perl5/bin/perl -w
+#!/Users/hinkman/perl5/perlbrew/perls/perl-5.16.0/bin/perl -w
 
 use File::Slurp qw( edit_file edit_file_lines );
 use File::Map qw( map_file unmap );
