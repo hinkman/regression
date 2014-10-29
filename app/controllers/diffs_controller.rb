@@ -7,10 +7,17 @@ class DiffsController < ApplicationController
 
   # GET /diffs
   # GET /diffs.json
+  # TODO clean up diff/results query
   def index
+    if params[:q].to_s.include? 'results_updated_at desc'
+      @q = Diff.joins('LEFT OUTER JOIN `results` ON `results`.`diff_id` = `diffs`.`id` AND (results.id in (select a.id from (select id,diff_id from results order by id desc)  a group by a.diff_id))').order("results.updated_at desc").search()
+    elsif params[:q].to_s.include? 'results_updated_at asc'
+      @q = Diff.joins('LEFT OUTER JOIN `results` ON `results`.`diff_id` = `diffs`.`id` AND (results.id in (select a.id from (select id,diff_id from results order by id desc)  a group by a.diff_id))').order("results.updated_at asc").search()
+    else
+      @q = Diff.joins('LEFT OUTER JOIN `results` ON `results`.`diff_id` = `diffs`.`id` AND (results.id in (select a.id from (select id,diff_id from results order by id desc)  a group by a.diff_id))').search(params[:q])
+    end
+    @diffs = @q.result.includes(:config_file, :left_file_set, :right_file_set, :results)
     @q = Diff.search(params[:q])
-    # @notice =  params[:q]
-    @diffs = @q.result.includes(:config_file, :left_file_set, :right_file_set)
   end
 
   # GET /diffs/1

@@ -32,7 +32,7 @@ gem 'spring',        group: :development
 
 gem 'adauth'
 
-# gem 'foreigner'
+gem 'foreigner'
 # gem 'immigrant'
 
 gem 'ransack'

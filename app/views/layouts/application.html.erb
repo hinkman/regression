@@ -9,7 +9,7 @@
 <body>
 
 <div class="container">
-  <%= navbar container: 'fluid' do %>
+  <%= navbar fixed: 'top' do %>
     <%= navbar_header brand: 'Regression', brand_link: '/home' %>
     <%= navbar_collapse do %>
       <%= navbar_group class: 'foo', id: 'menu' do %>
@@ -19,7 +19,8 @@
       <% end %>
     <% end %>
   <% end %>
-
+</div>
+<div class="container">
   <%= yield %>
 </div>
 </body>

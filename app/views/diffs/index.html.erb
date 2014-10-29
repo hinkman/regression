@@ -1,64 +1,71 @@
-<h1>Listing diffs</h1>
-  <p id="notice"><%= notice %></p>
+<div class='row'>
+    <p id="notice"><%= @notice %></p>
+    <div class='col-xs-6'>
+        <%= link_to 'New Diff', new_diff_path, class: 'btn btn-xs btn-primary nounderline'  %>
+    </div>
+    <div class='col-xs-6 text-right'>
+        <%= search_form_for @q do |f| %>
+          <%= f.search_field :title_or_description_or_config_file_name_or_right_file_set_name_or_left_file_set_name_cont %>
 
-<%= search_form_for @q do |f| %>
-  <%= f.label 'Search' %>
-  <%= f.search_field :title_or_description_or_config_file_name_or_right_file_set_name_or_left_file_set_name_cont %>
+          <%= f.submit 'Search', {:class=>"btn btn-xs btn-primary"} %>
+        <% end %>
+    </div>
+</div>
+<!-- TODO filter links for mine, all, recent, etc -->
+<!-- TODO pagination -->
+<div class='row'>
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+        <tr>
+            <th><%= sort_link(@q,:title_case_insensitive, 'Title')%></th>
+            <th>
+                C: <%= sort_link(@q,:config_file_name,'Config File')%><br>
+                L: <%= sort_link(@q,:left_file_set_name,'Left File Set')%><br>
+                R: <%= sort_link(@q,:right_file_set_name,'Right File Set')%>
+            </th>
+            <th><%= sort_link(@q,:results_updated_at,'Last Result') %></th>
+            <th></th>
+        </tr>
+        </thead>
 
-  <%= f.submit 'search' %>
-<% end %>
-
-<table class="table table-bordered table-striped table-hover">
-    <thead>
-    <tr>
-        <th><%= sort_link(@q,:title, 'Title')%></th>
-        <th>
-            C: <%= sort_link(@q,:config_file_name,'Config File')%><br>
-            L: <%= sort_link(@q,:left_file_set_name,'Left File Set')%><br>
-            R: <%= sort_link(@q,:right_file_set_name,'Right File Set')%>
-        </th>
-        <th><%= sort_link(@q,:results_updated_at,'Last Result') %></th>
-        <th></th>
-    </tr>
-    </thead>
-
-    <tbody>
-    <% @diffs.each do |diff| %>
-      <tr data-link="row" class='rowlink'>
-          <td><%= link_to diff.title, diff %><br>
-              <div class="bs-component">
-                  <% if diff.description.empty? %>
-                    <button title="" data-original-title="" type="button" class="btn btn-xs btn-default rowlink-skip" data-container="body" data-toggle="popover" data-placement="right" data-content="<%= diff.description %>">
-                        No Description
-                    </button>
+        <tbody>
+        <% @diffs.each do |diff| %>
+          <tr data-link="row" class='rowlink'>
+              <td><%= link_to diff.title, diff %><br>
+                  <div class="bs-component">
+                      <% if diff.description.empty? %>
+                        <button title="" data-original-title="" type="button" class="btn btn-xs btn-default rowlink-skip" data-container="body" data-toggle="popover" data-placement="right" data-content="<%= diff.description %>">
+                            No Description
+                        </button>
+                      <% else %>
+                        <button title="" data-original-title="" type="button" class="btn btn-xs btn-primary rowlink-skip" data-container="body" data-toggle="popover" data-placement="right" data-content="<%= diff.description %>">
+                            Click For Description
+                        </button>
+                      <% end %>
+                  </div>
+              </td>
+              <td>
+                  C: <%= link_to diff.config_file.name, config_file_path(diff.config_file), class: 'rowlink-skip underline' %><br>
+                  L: <%= link_to diff.left_file_set.name, file_set_path(diff.left_file_set), class: 'rowlink-skip underline' %><br>
+                  R: <%= link_to diff.right_file_set.name, file_set_path(diff.right_file_set), class: 'rowlink-skip underline' %>
+              </td>
+              <td>
+                  <% if diff.results.first.nil? %>
+                    &nbsp;
                   <% else %>
-                    <button title="" data-original-title="" type="button" class="btn btn-xs btn-primary rowlink-skip" data-container="body" data-toggle="popover" data-placement="right" data-content="<%= diff.description %>">
-                        Click For Description
-                    </button>
+                    <%= diff.results.first.updated_at.localtime.strftime("%F %T %Z") %>
+                    (<%= diff.results.first.pct_complete %>%)
                   <% end %>
-              </div>
-          </td>
-          <td>
-              C: <%= link_to diff.config_file.name, config_file_path(diff.config_file), class: 'rowlink-skip underline' %><br>
-              L: <%= link_to diff.left_file_set.name, file_set_path(diff.left_file_set), class: 'rowlink-skip underline' %><br>
-              R: <%= link_to diff.right_file_set.name, file_set_path(diff.right_file_set), class: 'rowlink-skip underline' %>
-          </td>
-          <td>
-              <% if diff.results.first.nil? %>
-                &nbsp;
-              <% else %>
-                <%= diff.results.first.updated_at.localtime.strftime("%F %T %Z") %>
-                (<%= diff.results.first.pct_complete %>%)
-              <% end %>
-          </td>
-          <td class="rowlink-skip"><%= link_to 'Destroy', diff, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %></td>
-      </tr>
-    <% end %>
-    </tbody>
-</table>
-<br>
-
-<%= link_to 'New Diff', new_diff_path %>
+              </td>
+              <td class="rowlink-skip"><%= link_to 'Destroy', diff, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %></td>
+          </tr>
+        <% end %>
+        </tbody>
+    </table>
+</div>
+<div class='row'>
+    <%= link_to 'New Diff', new_diff_path, class: 'btn btn-xs btn-primary nounderline'  %>
+</div>
 <script>
   (function(){
     $('.bs-component [data-toggle="popover"]').popover();

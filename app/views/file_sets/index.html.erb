@@ -1,67 +1,70 @@
-<h1>Listing file_sets</h1>
-<p id="notice"><%= notice %></p>
+<div class='row'>
+    <p id="notice"><%= @notice %></p>
+    <div class='col-xs-6'>
+        <%= link_to 'New File Set', new_file_set_path, class: 'btn btn-xs btn-primary nounderline'  %>
+    </div>
+    <div class='col-xs-6 text-right'>
+        <%= search_form_for @q do |f| %>
+          <%= f.search_field :name_or_description_or_diffs_left_title_or_diffs_right_title_cont %>
 
-<%= search_form_for @q do |f| %>
-  <%= f.label "Search" %>
-  <%= f.search_field :name_or_description_or_diffs_left_title_or_diffs_right_title_cont %>
-  <%= f.submit "search" %>
-<% end %>
+          <%= f.submit 'Search', {:class=>"btn btn-xs btn-primary"} %>
+        <% end %>
+    </div>
+</div>
+<div class='row'>
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+        <tr>
+            <th><%= sort_link(@q,:name_case_insensitive, 'Name')%></th>
+            <th>
+                <%= sort_link(@q,:diffs_left_title,'L: Used as Left')%><br>
+                <%= sort_link(@q,:diffs_right_title,'R: Used as Right')%>
+            </th>
+            <th><%= sort_link(@q,:updated_at,'Last Updated')%></th>
+            <th></th>
+        </tr>
+        </thead>
 
-<table class="table table-bordered table-striped table-hover">
-    <thead>
-    <tr>
-        <th><%= sort_link(@q,:name, 'Name')%></th>
-        <th>
-            <%= sort_link(@q,'fs_file_name','F: File Name')%><br>
-            <%= sort_link(@q,:diffs_left_title,'L: Used as Left')%><br>
-            <%= sort_link(@q,:diffs_right_title,'R: Used as Right')%>
-        </th>
-        <th><%= sort_link(@q,:updated_at,'Last Updated')%></th>
-        <th></th>
-    </tr>
-    </thead>
-
-    <tbody>
-    <% @file_sets.each do |file_set| %>
-      <tr data-link="row" class="rowlink">
-          <td><%= link_to file_set.name, file_set %><br>
-              <div class="bs-component">
-                  <% if file_set.description.empty? %>
-                    <button title="" data-original-title="" type="button" class="btn btn-xs btn-default rowlink-skip" data-container="body" data-toggle="popover" data-placement="right" data-content="<%= file_set.description %>">
-                        No Description
-                    </button>
-                  <% else %>
-                    <button title="" data-original-title="" type="button" class="btn btn-xs btn-primary rowlink-skip" data-container="body" data-toggle="popover" data-placement="right" data-content="<%= file_set.description %>">
-                        Click For Description
-                    </button>
+        <tbody>
+        <% @file_sets.each do |file_set| %>
+          <tr data-link="row" class="rowlink">
+              <td><%= link_to file_set.name, file_set %><br>
+                  <div class="bs-component">
+                      <% if file_set.description.empty? %>
+                        <button title="" data-original-title="" type="button" class="btn btn-xs btn-default rowlink-skip" data-container="body" data-toggle="popover" data-placement="right" data-content="<%= file_set.description %>">
+                            No Description
+                        </button>
+                      <% else %>
+                        <button title="" data-original-title="" type="button" class="btn btn-xs btn-primary rowlink-skip" data-container="body" data-toggle="popover" data-placement="right" data-content="<%= file_set.description %>">
+                            Click For Description
+                        </button>
+                      <% end %>
+                  </div>
+              </td>
+              <td>
+                  L: <% file_set.diffs_left.each do |diff| %>
+                    <%= link_to diff.title, diff_path(diff), class: 'rowlink-skip underline' %>
+                  <% end %><br>
+                  R: <% file_set.diffs_right.each do |diff| %>
+                    <%= link_to diff.title, diff_path(diff), class: 'rowlink-skip underline' %>
                   <% end %>
-              </div>
-          </td>
-          <td>
-              F: <%= file_set.fs_file_name %><br>
-              L: <% file_set.diffs_left.each do |diff| %>
-                <%= link_to diff.title, diff_path(diff), class: 'rowlink-skip underline' %>
-              <% end %><br>
-              R: <% file_set.diffs_right.each do |diff| %>
-                <%= link_to diff.title, diff_path(diff), class: 'rowlink-skip underline' %>
-              <% end %>
-          </td>
-          <td><%= file_set.updated_at.localtime.strftime("%F %T %Z") %></td>
-          <td class="rowlink-skip">
-              <% if file_set.can_destroy? %>
-                <%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %>
-              <% else %>
-                <%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-default disabled nounderline' %>
-              <% end %>
-          </td>
-      </tr>
-    <% end %>
-    </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New File set', new_file_set_path %>
+              </td>
+              <td><%= file_set.updated_at.localtime.strftime("%F %T %Z") %></td>
+              <td class="rowlink-skip">
+                  <% if file_set.can_destroy? %>
+                    <%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %>
+                  <% else %>
+                    <%= link_to 'Destroy', file_set, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-default disabled nounderline' %>
+                  <% end %>
+              </td>
+          </tr>
+        <% end %>
+        </tbody>
+    </table>
+</div>
+<div class='row'>
+    <%= link_to 'New File Set', new_file_set_path, class: 'btn btn-xs btn-primary nounderline'  %>
+</div>
 <script>
   (function(){
     $('.bs-component [data-toggle="popover"]').popover();

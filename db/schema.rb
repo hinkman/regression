@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141008190532) do
+ActiveRecord::Schema.define(version: 20141029203043) do
 
   create_table "actions", force: true do |t|
     t.string   "action"
@@ -76,6 +76,17 @@ ActiveRecord::Schema.define(version: 20141008190532) do
 
   add_index "results", ["diff_id"], name: "results_diff_id_fk", using: :btree
 
+  create_table "unmatched_files", force: true do |t|
+    t.integer  "result_id"
+    t.string   "side"
+    t.string   "name"
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "unmatched_files", ["result_id"], name: "unmatched_files_result_id_fk", using: :btree
+
   create_table "users", force: true do |t|
     t.string   "login"
     t.string   "first_name"
@@ -87,5 +98,15 @@ ActiveRecord::Schema.define(version: 20141008190532) do
     t.boolean  "is_active"
     t.text     "cn_strings"
   end
+
+  add_foreign_key "actions", "users", name: "actions_user_id_fk"
+
+  add_foreign_key "diffs", "config_files", name: "diffs_config_file_id_fk"
+  add_foreign_key "diffs", "file_sets", name: "diffs_left_id_fk", column: "left_id"
+  add_foreign_key "diffs", "file_sets", name: "diffs_right_id_fk", column: "right_id"
+
+  add_foreign_key "results", "diffs", name: "results_diff_id_fk"
+
+  add_foreign_key "unmatched_files", "results", name: "unmatched_files_result_id_fk"
 
 end

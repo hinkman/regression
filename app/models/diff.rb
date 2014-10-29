@@ -9,7 +9,6 @@ class Diff < ActiveRecord::Base
   belongs_to :right_file_set, :class_name => 'FileSet', :foreign_key => 'right_id'
 
   # default_scope lambda { where("diffs.is_active = 1") }
-  scope :where_last_result_per_diff, lambda { where("results.id in (select a.id from (select id,diff_id from results order by id desc)  a group by a.diff_id)") }
 
   def diff_file_sets
     if self.left_id == self.right_id
@@ -17,4 +16,9 @@ class Diff < ActiveRecord::Base
       errors.add(:right, "cannot use the same file set for both left and right")
     end
   end
+
+  ransacker :title_case_insensitive, type: :string do
+    arel_table[:title].lower
+  end
+
 end

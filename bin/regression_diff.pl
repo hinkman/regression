@@ -17,15 +17,15 @@ $|=1;
 select("STDOUT");
 $|=1;
 
-print "Version 3.3.0\n";
-$debug=1;
+print "Version 3.3.1\n";
+$debug=0;
 %matches_hash=();
 %exclude_complete_hash=();
 %clean_up_complete_hash=();
 %right_dir_hash=();
 
 $date=`date '+%Y/%m/%d'`; chomp $date;
-$dir_date=`date '+%Y%m%d%H%M%S'`; 
+$dir_date=`date '+%Y%m%d%H%M%S'`;
 chomp $dir_date;
 # $gis50_top="/docrep/DEMO-GIS/mlh/mods";
 # $gis41_url="/gis41_dirs";
@@ -98,13 +98,13 @@ print "order_matters: $order_matters\n" if ($debug);
 @patterns_hash_refs = @{$config->{filenames}};
 
 if (exists $config->{exclusions}->{right}) {
-    foreach my $hash_ref (@{$config->{exclusions}->{right}}) { 
+    foreach my $hash_ref (@{$config->{exclusions}->{right}}) {
         $$exclude_right_hash_ref{$$hash_ref{pattern}} = $$hash_ref{type};
     }
 }
 
 if (exists $config->{exclusions}->{left}) {
-    foreach my $hash_ref (@{$config->{exclusions}->{left}}) { 
+    foreach my $hash_ref (@{$config->{exclusions}->{left}}) {
         $$exclude_left_hash_ref{$$hash_ref{pattern}} = $$hash_ref{type};
     }
 }
@@ -145,15 +145,15 @@ foreach $left_file (<$left_dir/*>) {
     # (unlink $file and next) if ($file =~ /\.fail$/);
     # (unlink $file and next) if ($file =~ /^[0-9a-f]+_\._.*/);
     (unlink $left_file and next) if (-z $left_file);
-    
+
     %{$finished_clean_hash}=%{$clean_hash};
     # @finished_reference_items=@reference_items;
     if ($file_type eq "EDI") {
         # Get the segment and element terminators before we start
         # munging up the file
         map_file $mapped_file, $left_file;
-        $eld=substr($mapped_file,3,1); 
-        $sed=substr($mapped_file,105,1); 
+        $eld=substr($mapped_file,3,1);
+        $sed=substr($mapped_file,105,1);
         unmap $mapped_file;
         $finished_clean_hash=&edi_clean_hash_setup($finished_clean_hash,$eld,$sed);
         # @finished_reference_items=map { eval "qr/$_/" } @finished_reference_items if (scalar(@finished_reference_items));
@@ -171,7 +171,7 @@ foreach $left_file (<$left_dir/*>) {
     } else {
         $useful_value="";
     }
-    
+
 
     foreach $pattern_hash_ref (@patterns_hash_refs) {
         if ($$pattern_hash_ref{matching_fields}=~/all/) {
@@ -205,7 +205,7 @@ foreach $left_file (<$left_dir/*>) {
         print "left_file_match = $left_file_match\n" if ($debug);
         $bp_string=$bp_id="";
 
-        
+
         $right_file_list_ref=&setup_match_list($right_dir_array_ref,$left_file_match);
         print "matches @{$right_file_list_ref}\n" if ($debug);
         $possible_matches_ref=&find_match($right_dir,$left_file,$right_file_list_ref,$finished_clean_hash,\@dig_it_array,$useful_value,$bp_string,$sed);
@@ -226,7 +226,7 @@ sub setup_match_list {
     our %matches_hash;
     my @temp_array;
     my %temp_seen;
-    
+
     if (not exists $matches_hash{$current_file_match}) {
         print "New match list for $current_file_match\n" if ($debug > 1);
         @{$matches_hash{$current_file_match}}=grep(/$current_file_match/,@$current_dir_ref);
@@ -242,7 +242,7 @@ sub dig_out_value {
     (my $current_file, my $current_dig_it_array_ref)=@_;
     my $mapped_file;
     my $found_it="";
-    
+
     print "In dig_out_value\n" if ($debug);
     map_file $mapped_file, $current_file;
     foreach my $match_string (@$current_dig_it_array_ref) {
@@ -264,7 +264,7 @@ sub output_entry {
     my $current_left_bp=shift || "";
     our $results_file;
     my $possible_files="";
-    
+
     print "In output_entry\n" if ($debug);
     my $current_left_file=basename($full_left_file);
     my $current_left_dir=dirname($full_left_file);
@@ -329,7 +329,7 @@ sub in_place_clean {
             }
             $exclude_complete_hash{$editor}=1;
         }
-    }    
+    }
 }
 
 sub load_right_dir_list {
@@ -367,7 +367,7 @@ sub find_match {
     my $file_rows_right=0;
     my @temp_left;
     my @temp_right;
-    
+
     my $current_left_file=basename($full_left_file);
     my $current_left_dir=dirname($full_left_file);
     # map_file $mapped_file, $current_left_file;
@@ -423,7 +423,7 @@ sub find_match {
                 print "already hashed $matched_file $right_dir_hash{$matched_file}{cksum}\n" if ($debug > 1);
             }
             my $current_right_file=(-r "$current_right_dir/.cleaned/$matched_file") ? "$current_right_dir/.cleaned/$matched_file" : "$current_right_dir/$matched_file";
-            if (($current_useful) and (not $right_dir_hash{$matched_file}{"useful"})) { 
+            if (($current_useful) and (not $right_dir_hash{$matched_file}{"useful"})) {
                 print "making useful: $matched_file\n" if ($debug > 1);
                 $right_dir_hash{$matched_file}{"useful"}=&dig_out_value("$current_right_file",$current_dig_it_array_ref);
             } else {
@@ -447,8 +447,8 @@ sub find_match {
             print "No match right $matched_file left $current_left_file\n"  if ($debug > 1);
             if (($current_useful) and ($right_dir_hash{$matched_file}{"useful"}) and ($current_useful eq $right_dir_hash{$matched_file}{"useful"})) {
                 print "Found useful for $matched_file\n" if ($debug);
-                
-                # if there is a segment delimiter, it must be EDI, so it might be 
+
+                # if there is a segment delimiter, it must be EDI, so it might be
                 # one long line and we need to split before sort. We sort because we
                 # are not guarenteed to get the line but still might have all of the lines
                 if ($current_sed) {
@@ -475,6 +475,7 @@ sub find_match {
                     @temp_right=sort @temp_right;
                 }
                 print "Found $full_left_file left_temp=".scalar(@temp_left)." $current_right_file right_temp=".scalar(@temp_right)."\n" if ($debug);
+                # TODO Table-ize diff results
                 $right_dir_hash{$matched_file}{"diff"}=diff(\@temp_left, \@temp_right, { STYLE => "OldStyle" });
                 print "Diff for $matched_file".$right_dir_hash{$matched_file}{"diff"}."\n" if ($debug);
                 (not $found_useful) and $found_useful=$matched_file;
@@ -482,11 +483,13 @@ sub find_match {
             }
         }
     }
+
+    # TODO Make lists and cleanup output logic
     if ($found_match) {
         return([]);
     } elsif ($found_useful) {
         return([$found_useful]);
-    } elsif ($#$matches_ref < 0) {
+    } elsif (($#$matches_ref < 0) or ($current_useful)) {
         return(["No possible matches"]);
     } elsif (($#$matches_ref == 0) and (not $right_dir_hash{$$matches_ref[0]}{"diff"})) {
         $right_dir_hash{$$matches_ref[0]}{"diff"}=(-r "$current_right_dir/.cleaned/".$$matches_ref[0]) ? diff("$full_left_file", "$current_right_dir/.cleaned/".$$matches_ref[0], { STYLE => "OldStyle" }) : diff("$full_left_file", "$current_right_dir/".$$matches_ref[0], { STYLE => "OldStyle" });
@@ -508,9 +511,9 @@ sub clean_me {
 # sub edi_clean_hash_setup {
 #     (my $eld, my $sed, my $doctype)=@_;
 #     my $default_edi={
-#         qr{(ISA\Q$eld\E)((?:[^\Q$eld\E]*\Q$eld\E){8})[^\Q$eld\E]*(\Q$eld\E)[^\Q$eld\E]*(\Q$eld\E)((?:[^\Q$eld\E]*\Q$eld\E){2})[^\Q$eld\E]*(\Q$eld\E)((?:[^\Q$eld$sed\E]*[\Q$eld$sed\E]){7})} => '$1.$2.$3.$4.$5.$6.$7', 
-#         qr{(\Q$sed\E\s?ISA\Q$eld\E)((?:[^\Q$eld\E]*\Q$eld\E){8})[^\Q$eld\E]*(\Q$eld\E)[^\Q$eld\E]*(\Q$eld\E)((?:[^\Q$eld\E]*\Q$eld\E){2})[^\Q$eld\E]*(\Q$eld\E)((?:[^\Q$eld$sed\E]*[\Q$eld$sed\E]){7})} => '$1.$2.$3.$4.$5.$6.$7', 
-#         qr{(\Q$sed\E\s?GS\Q$eld\E)((?:[^\Q$eld\E]*\Q$eld\E){3})[^\Q$eld\E]*(\Q$eld\E)[^\Q$eld\E]*(\Q$eld\E)[^\Q$eld\E]*(\Q$eld\E)((?:[^\Q$eld$sed\E]*[\Q$eld$sed\E]){2})} => '$1.$2.$3.$4.$5.$6', 
+#         qr{(ISA\Q$eld\E)((?:[^\Q$eld\E]*\Q$eld\E){8})[^\Q$eld\E]*(\Q$eld\E)[^\Q$eld\E]*(\Q$eld\E)((?:[^\Q$eld\E]*\Q$eld\E){2})[^\Q$eld\E]*(\Q$eld\E)((?:[^\Q$eld$sed\E]*[\Q$eld$sed\E]){7})} => '$1.$2.$3.$4.$5.$6.$7',
+#         qr{(\Q$sed\E\s?ISA\Q$eld\E)((?:[^\Q$eld\E]*\Q$eld\E){8})[^\Q$eld\E]*(\Q$eld\E)[^\Q$eld\E]*(\Q$eld\E)((?:[^\Q$eld\E]*\Q$eld\E){2})[^\Q$eld\E]*(\Q$eld\E)((?:[^\Q$eld$sed\E]*[\Q$eld$sed\E]){7})} => '$1.$2.$3.$4.$5.$6.$7',
+#         qr{(\Q$sed\E\s?GS\Q$eld\E)((?:[^\Q$eld\E]*\Q$eld\E){3})[^\Q$eld\E]*(\Q$eld\E)[^\Q$eld\E]*(\Q$eld\E)[^\Q$eld\E]*(\Q$eld\E)((?:[^\Q$eld$sed\E]*[\Q$eld$sed\E]){2})} => '$1.$2.$3.$4.$5.$6',
 #         qr{(\Q$sed\E\s?BGN\Q$eld\E)((?:[^\Q$eld\E]*\Q$eld\E){3})[^\Q$eld$sed\E]*([\Q$eld$sed\E])} => '$1.$2.$3',
 #         qr{(\Q$sed\E\s?BSN\Q$eld\E)((?:[^\Q$eld\E]*\Q$eld\E){3})[^\Q$eld$sed\E]*([\Q$eld$sed\E])} => '$1.$2.$3',
 #         qr{(\Q$sed\E\s?ST\Q$eld\E)([^\Q$eld\E]*\Q$eld\E)[^\Q$eld$sed\E]*(\Q$sed\E)} => '$1.$2.$3',
@@ -532,10 +535,10 @@ sub clean_me {
 #         qr{(PO_HDR\s+\d+)},
 #     ];
 #     my $gp={
-#         qr{(FILE_HDR\s\s[^\s]+\s+[^\s]+\s+)(?:\d){14}(\s+\~)} => '$1.$2', 
+#         qr{(FILE_HDR\s\s[^\s]+\s+[^\s]+\s+)(?:\d){14}(\s+\~)} => '$1.$2',
 #     };
 #     my $mis={
-#         qr{(2012)\d\d\d\d( )\d\d(:)\d\d(:)\d\d} => '$1.$2.$3.$4', 
+#         qr{(2012)\d\d\d\d( )\d\d(:)\d\d(:)\d\d} => '$1.$2.$3.$4',
 #     };
 #     ($doctype eq "dig_it") and return $dig_it;
 #     ($doctype eq "gp") and return $gp;
@@ -571,7 +574,7 @@ sub edi_clean_hash_setup {
         #     $exclude_complete_hash{$editor}=1;
         # }
     }
-    # exit; 
+    # exit;
     return $replace_strings_hashref;
 }
 

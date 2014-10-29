@@ -30,3 +30,10 @@
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
   background-color: #9933cc;
 }
+
+@media (min-width: 980px) {
+  body {
+    padding-top: 60px;
+    padding-bottom: 42px;
+  }
+}

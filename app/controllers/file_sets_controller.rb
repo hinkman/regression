@@ -26,6 +26,7 @@ class FileSetsController < ApplicationController
 
   # POST /file_sets
   # POST /file_sets.json
+  # TODO Quotas
   def create
     @file_set = FileSet.new(file_set_params)
     @file_set.is_active = true
