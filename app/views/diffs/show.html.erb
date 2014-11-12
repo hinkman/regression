@@ -1,71 +1,61 @@
 <div class="container-fluid">
-<div class="row">
-  <div class="col-md-6">
-    <%= simple_form_for @diff, html: { class: 'form-horizontal', :multipart => true }, wrapper: :horizontal_form do |f| %>
+    <div class="row">
+        <div class="col-md-6">
+            <%= simple_form_for @diff, html: { class: 'form-horizontal', :multipart => true }, wrapper: :horizontal_form do |f| %>
 
-        <div class="form-inputs">
-          <%= f.input :title, placeholder: 'Title', disabled: true  %>
-          <%= f.input :description, placeholder: 'Description', disabled: true  %>
-          <%= f.association :config_file, label: 'Config File', disabled: true  %>
-          <%= f.association :left_file_set, label: 'Left File Set', disabled: true  %>
-          <div class="form-group string optional diff_right_file_set">
-            <%= f.label :right_file_set, "Right File Set", class: 'string optional col-sm-3 control-label' %>
-            <div class="col-sm-9">
-              <div class="input-group">
-                <%= f.input_field :right_file_set, disabled: true, class: 'string optional form-control', value: @diff.right_file_set.name %>
-                <span class="input-group-btn">
-                  <%= link_to 'Update Zip', edit_file_set_path(@diff.right_file_set.id), class: 'btn btn-primary' %>
-                </span>
+              <div class="form-inputs">
+                  <%= f.input :title, placeholder: 'Title', disabled: true  %>
+                  <%= f.input :description, placeholder: 'Description', disabled: true  %>
+                  <%= f.association :config_file, label: 'Config File', disabled: true  %>
+                  <%= f.association :left_file_set, label: 'Left File Set', disabled: true  %>
+                  <div class="form-group string optional diff_right_file_set">
+                      <%= f.label :right_file_set, "Right File Set", class: 'string optional col-sm-3 control-label' %>
+                      <div class="col-sm-9">
+                          <div class="input-group">
+                              <%= f.input_field :right_file_set, disabled: true, class: 'string optional form-control', value: @diff.right_file_set.name %>
+                              <span class="input-group-btn">
+                                  <%= link_to 'Update Zip', edit_file_set_path(@diff.right_file_set.id), class: 'btn btn-primary' %>
+                              </span>
+                          </div>
+                      </div>
+                  </div>
               </div>
-            </div>
-          </div>
+
+              <div class="form-actions">
+                  <%= link_to "Run", run_diff_path(@diff), class: 'btn btn-success', data: { confirm: 'Are you sure you want this diff to start running?' } %>
+                  <%= link_to "Edit", edit_diff_path(@diff), class: 'btn btn-primary' %>
+              </div>
+            <% end %>
         </div>
 
-        <div class="form-actions">
-          <%= link_to "Run", run_diff_path(@diff), class: 'btn btn-success', data: { confirm: 'Are you sure you want this diff to start running?' } %>
-          <%= link_to "Edit", edit_diff_path(@diff), class: 'btn btn-primary' %>
+        <div class="col-md-4">
+            <h2 class="sub-header">Results</h2>
+
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                <tr>
+                    <th><%= sort_link(@q,:updated_at,'Last Update') %></th>
+                    <th><%= sort_link(@q,:pct_complete,'% Complete')%></th>
+                </tr>
+                </thead>
+
+                <!-- TODO Display files in new popup window -->
+                <tbody>
+                <% @working_results.each do |result| %>
+                  <tr data-link="row" class="rowlink">
+                      <td id="result_cell"><%= link_to result.updated_at.localtime.strftime("%F %T %Z"), fetch_result_path(:result_id => result.id), :remote => true %></td>
+                      <td><%= result.pct_complete %></td>
+                      <td class="rowlink-skip"><%= link_to "Destroy", result, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %></td>
+                  </tr>
+                <% end %>
+                </tbody>
+            </table>
+
         </div>
-    <% end %>
-  </div>
-
-  <div class="col-md-4">
-      <h2 class="sub-header">Results</h2>
-
-      <table class="table table-bordered table-striped table-hover">
-          <thead>
-          <tr>
-              <th><%= sort_link(@q,:updated_at,'Last Update') %></th>
-              <th><%= sort_link(@q,:pct_complete,'% Complete')%></th>
-          </tr>
-          </thead>
-
-          <!-- TODO Display files in new popup window -->
-          <tbody>
-          <% @working_results.each do |result| %>
-            <tr data-link="row" class="rowlink">
-                <td id="result_cell"><%= link_to result.updated_at.localtime.strftime("%F %T %Z"), result.path %></td>
-                <td><%= result.pct_complete %></td>
-                <td class="rowlink-skip"><%= link_to "Destroy", result, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-xs btn-danger nounderline' %></td>
-            </tr>
-          <% end %>
-          </tbody>
-      </table>
-
-  </div>
-</div>
-<div class="row">
-    <div class="col-lg-12">
-        <h2>Results</h2>
+    </div>
+    <hr>
+    <div class="row">
+        <div id="out_result" >
+        </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-10" id="out_results">
-    </div>
-</div>
-</div>
-<script>
-  $("#result_cell a").click(function () {
-    $("#out_results").load($(this).attr("href")); //load html from the url and put it in the #content element
-    return false; //prevent the default href action
-  });
-</script>

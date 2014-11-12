@@ -1,0 +1,1 @@
+$("#out_result").html("<%= escape_javascript(render partial: 'out_result', locals: { unmatched_left: @unmatched_left, unmatched_right: @unmatched_right, successful: @successful, unsuccessful: @unsuccessful, result: @result } ) %>"); //load html from the url and put it in the #content element

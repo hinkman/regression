@@ -38,7 +38,7 @@ class ResultsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_params
-      params.require(:result).permit(:pct_complete, :path)
+      params.require(:result).permit(:pct_complete, :path, :left_count, :right_count)
     end
 
     def add_action

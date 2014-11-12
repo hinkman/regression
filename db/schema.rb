@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141029203043) do
+ActiveRecord::Schema.define(version: 20141111210703) do
 
   create_table "actions", force: true do |t|
     t.string   "action"
@@ -72,9 +72,19 @@ ActiveRecord::Schema.define(version: 20141029203043) do
     t.datetime "updated_at"
     t.boolean  "is_active"
     t.integer  "pct_complete"
+    t.integer  "left_count"
+    t.integer  "right_count"
   end
 
   add_index "results", ["diff_id"], name: "results_diff_id_fk", using: :btree
+
+  create_table "successful_files", force: true do |t|
+    t.integer  "result_id"
+    t.string   "left_name"
+    t.string   "right_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "unmatched_files", force: true do |t|
     t.integer  "result_id"
@@ -86,6 +96,17 @@ ActiveRecord::Schema.define(version: 20141029203043) do
   end
 
   add_index "unmatched_files", ["result_id"], name: "unmatched_files_result_id_fk", using: :btree
+
+  create_table "unsuccessful_files", force: true do |t|
+    t.integer  "result_id"
+    t.integer  "left_line_number"
+    t.text     "left_line"
+    t.integer  "right_line_number"
+    t.text     "right_line"
+    t.string   "compare_key"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "login"

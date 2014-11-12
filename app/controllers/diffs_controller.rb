@@ -31,6 +31,17 @@ class DiffsController < ApplicationController
     end
   end
 
+  def from_result_id
+    @result = Result.find(params[:result_id])
+    @unmatched_left = UnmatchedFile.where_result_id_and_side(@result.id,'left').order('name ASC')
+    @unmatched_right = UnmatchedFile.where_result_id_and_side(@result.id,'right').order('name ASC')
+    @successful = SuccessfulFile.where_result_id(@result.id).order('left_name ASC')
+    @unsuccessful = UnsuccessfulFile.where_result_id(@result.id).order('compare_key,left_line_number,right_line_number ASC')
+    respond_to do |format|
+      format.js {}
+    end
+  end
+
   # GET /diffs/new
   def new
     @diff = Diff.new
@@ -96,26 +107,26 @@ class DiffsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_diff
-      @diff = Diff.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_diff
+    @diff = Diff.find(params[:id])
+  end
 
-    def set_config_files
-      @config_files = ConfigFile.all
-    end
+  def set_config_files
+    @config_files = ConfigFile.all
+  end
 
-    def set_file_sets
-      @file_sets = FileSet.all
-    end
+  def set_file_sets
+    @file_sets = FileSet.all
+  end
 
   # Never trust parameters from the scary internet, only allow the white list through.
-    def diff_params
-      params.require(:diff).permit(:title, :description, :config_file_id, :left_id, :right_id)
-    end
+  def diff_params
+    params.require(:diff).permit(:title, :description, :config_file_id, :left_id, :right_id)
+  end
 
-    def add_action
-      Action.create(:action => action_name, :item => 'diff', :user_id => @current_user.id, :item_id => @diff.id)
-    end
+  def add_action
+    Action.create(:action => action_name, :item => 'diff', :user_id => @current_user.id, :item_id => @diff.id)
+  end
 
 end

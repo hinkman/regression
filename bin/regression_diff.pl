@@ -1,5 +1,5 @@
-#!/opt/perl5/bin/perl -w
 #!/Users/hinkman/perl5/perlbrew/perls/perl-5.16.0/bin/perl -w
+#!/opt/perl5/bin/perl -w
 
 use File::Slurp qw( edit_file edit_file_lines );
 use File::Map qw( map_file unmap );
@@ -18,7 +18,7 @@ select("STDOUT");
 $|=1;
 
 print "Version 3.3.1\n";
-$debug=0;
+$debug=2;
 %matches_hash=();
 %exclude_complete_hash=();
 %clean_up_complete_hash=();
@@ -70,10 +70,10 @@ $right_url="$url_top/$output_prefix/$dir_date/right";
 `mkdir -p $basedir`;
 $results_file="$basedir/index.html";
 $results_url="$url_top/$output_prefix/$dir_date/index.html";
-( -w $results_file ) or `echo '<!-- Start counter -->\n<!-- End counter -->\n<!-- Top of file -->' > $results_file`;
+# ( -w $results_file ) or `echo '<!-- Start counter -->\n<!-- End counter -->\n<!-- Top of file -->' > $results_file`;
 
 if ($result_id) {
-    `curl -v -H 'Content-Type: application/json' -H 'Accept: application/json' -X PATCH $rails_server/results/$result_id.json -d '{ "result" : { "pct_complete": 0, "path" : "$results_url" } }'`
+    `curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X PATCH $rails_server/results/$result_id.json -d '{ "result" : { "pct_complete": 0, "path" : "$results_url" } }'`
 }
 
 # $left_dir = zip_load($ARGV[1],"$basedir/left");
@@ -126,17 +126,24 @@ foreach $hash_ref (@patterns_hash_refs) {
 }
 # exit;
 
+# curl -v -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST localhost:3000/unmatched_files/ -d '{ "unmatched_file" : { "result_id": 38, "side": "left", "name":"one", "url":"/url" } }'
+
 `mkdir -p $right_dir/.hashed`;
 $right_dir_array_ref=&load_right_dir_list($right_dir);
-print "real $right_dir count ",scalar(@{$right_dir_array_ref}),"\n" if ($debug);
+$right_dir_count=scalar(@{$right_dir_array_ref});
+print "real $right_dir count $right_dir_count\n" if ($debug);
 $count=$hashcount=$cleancount=0;
-$left_dir_count=`ls $left_dir | wc -l`;
+chomp($left_dir_count=`ls $left_dir | wc -l`); $left_dir_count=~s/\s//g;
+if ($result_id) {
+    print "`curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X PATCH $rails_server/results/$result_id.json -d '{ \"result\" : { \"left_count\": \"$left_dir_count\", \"right_count\" : \"$right_dir_count\" } }'`" if ($debug);
+    `curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X PATCH $rails_server/results/$result_id.json -d '{ "result" : { "left_count": "$left_dir_count", "right_count" : "$right_dir_count" } }'`
+}
 foreach $left_file (<$left_dir/*>) {
     $count++;
-    (not ($count % 10)) and &in_place_clean($results_file,{'\<\!\-\- Start counter \-\-\>\n.*\<\!\-\- End counter \-\-\>\n'=>"<!-- Start counter -->\nRunning: $count of $left_dir_count\n<!-- End counter -->\n"},"stringm");
+    # (not ($count % 10)) and &in_place_clean($results_file,{'\<\!\-\- Start counter \-\-\>\n.*\<\!\-\- End counter \-\-\>\n'=>"<!-- Start counter -->\nRunning: $count of $left_dir_count\n<!-- End counter -->\n"},"stringm");
     if (($result_id) and ((not ($count % 25)) or ($count == $left_dir_count))) {
         $pct_complete=int(($count / $left_dir_count) * 100);
-        `curl -v -H 'Content-Type: application/json' -H 'Accept: application/json' -X PATCH $rails_server/results/$result_id.json -d '{ "result" : { "pct_complete": $pct_complete } }'`
+        `curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X PATCH $rails_server/results/$result_id.json -d '{ "result" : { "pct_complete": $pct_complete } }'`
     }
     print "$count $left_file\n" if ((not ($count % 10)) and ($debug));
     print "====================================================\n" if ($debug);
@@ -174,12 +181,16 @@ foreach $left_file (<$left_dir/*>) {
 
 
     foreach $pattern_hash_ref (@patterns_hash_refs) {
-        if ($$pattern_hash_ref{matching_fields}=~/all/) {
+        # TODO Clean-up file match logic
+        if ((exists $$pattern_hash_ref{matching_fields}) and ($$pattern_hash_ref{matching_fields}=~/all/)) {
             # print "found matching_fields all\n" if ($debug);
             $left_file_match=basename($left_file);
-        } elsif ($$pattern_hash_ref{matching_fields}=~/none/) {
+        } elsif ((exists $$pattern_hash_ref{matching_fields}) and ($$pattern_hash_ref{matching_fields}=~/none/)) {
             # print "found matching_fields all\n" if ($debug);
             $left_file_match=".*";
+        } elsif ((exists $$pattern_hash_ref{regex_left}) and (exists $$pattern_hash_ref{regex_left})) {
+            $left_file=~m/$$pattern_hash_ref{regex_left}/;
+            $left_file_match=eval "qr/$$pattern_hash_ref{regex_right}/";
         } else {
             @file_pattern_fields=split /\s*,\s*/,$$pattern_hash_ref{matching_fields};
             if (not grep(/^\d+$/,@file_pattern_fields)) {
@@ -204,20 +215,25 @@ foreach $left_file (<$left_dir/*>) {
         }
         print "left_file_match = $left_file_match\n" if ($debug);
         $bp_string=$bp_id="";
-
+        # exit;
 
         $right_file_list_ref=&setup_match_list($right_dir_array_ref,$left_file_match);
         print "matches @{$right_file_list_ref}\n" if ($debug);
         $possible_matches_ref=&find_match($right_dir,$left_file,$right_file_list_ref,$finished_clean_hash,\@dig_it_array,$useful_value,$bp_string,$sed);
         print "possible @{$possible_matches_ref}\n" if ($debug);
-        if ($#$possible_matches_ref >= 0) {
-            &output_entry($left_file,$possible_matches_ref,1,$useful_value,$bp_id);
-        }
+        # if ($#$possible_matches_ref >= 0) {
+        #     &output_entry($left_file,$possible_matches_ref,1,$useful_value,$bp_id);
+        # }
         # last if ($output_line);
         # last if (not $#$possible_matches_ref);
     }
 }
-&in_place_clean($results_file,{'\<\!\-\- Start counter \-\-\>\n.*\<\!\-\- End counter \-\-\>\n'=>"Finished "},"stringm");
+foreach my $right_file (sort keys %right_dir_hash) {
+    next if (exists $right_dir_hash{$right_file}{"diff"});
+    my $cleaned_right_file=encode_entities($right_file,"<>&~*() ");
+    `curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST $rails_server/unmatched_files/ -d '{ "unmatched_file" : { "result_id": $result_id, "side": "right", "name":"$right_file", "url":"$right_url/$cleaned_right_file" } }'`;
+}
+# &in_place_clean($results_file,{'\<\!\-\- Start counter \-\-\>\n.*\<\!\-\- End counter \-\-\>\n'=>"Finished "},"stringm");
 exit;
 
 sub setup_match_list {
@@ -309,6 +325,7 @@ sub in_place_clean {
     (my $editor, my $replace_strings_hashref, my $type)=@_;
     our %clean_up_complete_hash;
     our %exclude_complete_hash;
+    our $file_type;
 
     return if (($type eq "clean") and ($clean_up_complete_hash{$editor}));
     return if (($type eq "exclude") and ($exclude_complete_hash{$editor}));
@@ -319,7 +336,11 @@ sub in_place_clean {
         } elsif ($type eq "stringm") {
             edit_file { s/$rstring/$$replace_strings_hashref{$rstring}/ms } $editor;
         } elsif ($type eq "clean") {
-            edit_file { s/$rstring/$$replace_strings_hashref{$rstring}/eegs } $editor;
+            if ($file_type eq "CARMAFF") {
+                edit_file_lines { s/$rstring/$$replace_strings_hashref{$rstring}/eegs } $editor;
+            } else {
+                edit_file { s/$rstring/$$replace_strings_hashref{$rstring}/eegs } $editor;
+            }
             $clean_up_complete_hash{$editor}=1;
         } elsif ($type eq "exclude") {
             if ($$replace_strings_hashref{$rstring} eq "line") {
@@ -356,6 +377,9 @@ sub find_match {
     my $current_sed=shift || "";  # segment delimiter for EDI
     our %right_dir_hash;
     our $results_file;
+    our $rails_server;
+    our $result_id;
+    our $left_url;
     my $mapped_file;
     my $matches_keep_ref;
     my $matched_file;
@@ -369,6 +393,7 @@ sub find_match {
     my @temp_right;
 
     my $current_left_file=basename($full_left_file);
+    my $cleaned_left_file=encode_entities($current_left_file,"<>&~*() ");
     my $current_left_dir=dirname($full_left_file);
     # map_file $mapped_file, $current_left_file;
     # $file_cksum=cksum($mapped_file);
@@ -426,6 +451,7 @@ sub find_match {
             if (($current_useful) and (not $right_dir_hash{$matched_file}{"useful"})) {
                 print "making useful: $matched_file\n" if ($debug > 1);
                 $right_dir_hash{$matched_file}{"useful"}=&dig_out_value("$current_right_file",$current_dig_it_array_ref);
+                print "useful done: $right_dir_hash{$matched_file}{useful}\n" if ($debug > 1);
             } else {
                 print "not useful $current_useful  $right_dir_hash{$matched_file}{useful}\n" if ($debug > 1);
             }
@@ -435,18 +461,19 @@ sub find_match {
             if ($file_cksum == $right_dir_hash{$matched_file}{"cksum"}) {
                 print "MATCH! $matched_file\n\n" if ($debug);
                 $found_match=1;
+                `curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST $rails_server/successful_files/ -d '{ "successful_file" : { "result_id": $result_id, "left_name": "$current_left_file", "right_name":"$matched_file" } }'`;
                 unlink $full_left_file;
                 delete $right_dir_hash{$matched_file};
                 unlink "$current_right_dir/.cleaned/$matched_file";
                 unlink "$current_right_dir/.hashed/$matched_file";
                 unlink "$current_right_dir/$matched_file";
-                ( -w $results_file ) and &in_place_clean($results_file,{"\<\!\-\- Start right $matched_file \-\-\>\n.*\<\!\-\- End right $matched_file \-\-\>\n"=>""},"stringm");
+                # ( -w $results_file ) and &in_place_clean($results_file,{"\<\!\-\- Start right $matched_file \-\-\>\n.*\<\!\-\- End right $matched_file \-\-\>\n"=>""},"stringm");
                 splice @$matches_ref,$i,1;
                 last;
             }
             print "No match right $matched_file left $current_left_file\n"  if ($debug > 1);
             if (($current_useful) and ($right_dir_hash{$matched_file}{"useful"}) and ($current_useful eq $right_dir_hash{$matched_file}{"useful"})) {
-                print "Found useful for $matched_file\n" if ($debug);
+                print "Matching useful for $matched_file\n" if ($debug);
 
                 # if there is a segment delimiter, it must be EDI, so it might be
                 # one long line and we need to split before sort. We sort because we
@@ -475,24 +502,28 @@ sub find_match {
                     @temp_right=sort @temp_right;
                 }
                 print "Found $full_left_file left_temp=".scalar(@temp_left)." $current_right_file right_temp=".scalar(@temp_right)."\n" if ($debug);
-                # TODO Table-ize diff results
-                $right_dir_hash{$matched_file}{"diff"}=diff(\@temp_left, \@temp_right, { STYLE => "OldStyle" });
-                print "Diff for $matched_file".$right_dir_hash{$matched_file}{"diff"}."\n" if ($debug);
+                $right_dir_hash{$matched_file}{"diff"}=diff(\@temp_left, \@temp_right, { STYLE => "Table" });
+                print "Diff for $matched_file:\n" if ($debug);
+                print $right_dir_hash{$matched_file}{"diff"}."\n" if ($debug);
+                &parse_diff($current_left_file,$matched_file,$right_dir_hash{$matched_file}{"diff"});
                 (not $found_useful) and $found_useful=$matched_file;
                 last;
             }
         }
     }
 
-    # TODO Make lists and cleanup output logic
+    # TODO cleanup output logic
     if ($found_match) {
         return([]);
     } elsif ($found_useful) {
         return([$found_useful]);
     } elsif (($#$matches_ref < 0) or ($current_useful)) {
-        return(["No possible matches"]);
+        return([]);
+        # return(["No possible matches"]);
+        `curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST $rails_server/unmatched_files/ -d '{ "unmatched_file" : { "result_id": $result_id, "side": "left", "name":"$current_left_file", "url":"$left_url/$cleaned_left_file" } }'`;
     } elsif (($#$matches_ref == 0) and (not $right_dir_hash{$$matches_ref[0]}{"diff"})) {
-        $right_dir_hash{$$matches_ref[0]}{"diff"}=(-r "$current_right_dir/.cleaned/".$$matches_ref[0]) ? diff("$full_left_file", "$current_right_dir/.cleaned/".$$matches_ref[0], { STYLE => "OldStyle" }) : diff("$full_left_file", "$current_right_dir/".$$matches_ref[0], { STYLE => "OldStyle" });
+        $right_dir_hash{$$matches_ref[0]}{"diff"}=(-r "$current_right_dir/.cleaned/".$$matches_ref[0]) ? diff("$full_left_file", "$current_right_dir/.cleaned/".$$matches_ref[0], { STYLE => "Table" }) : diff("$full_left_file", "$current_right_dir/".$$matches_ref[0], { STYLE => "Table" });
+        &parse_diff($current_left_file,$$matches_ref[0],$right_dir_hash{$$matches_ref[0]}{"diff"});
     }
     return($matches_ref);
 }
@@ -589,4 +620,56 @@ sub zip_load {
     return $extract_dir;
 
 }
+
+sub parse_diff {
+    (my $left_filename, my $right_filename, my $diff_output)=@_;
+    my @flag_locations;
+    my $header_line_done=0;
+    our $left_url;
+    our $right_url;
+
+    my @split_diff=split(/\n/,$diff_output);
+    my $file_key=unpack("%32W*",$left_filename) % 65535;
+
+    my $offset = 0;
+    my $result = index($split_diff[0], '+', $offset);
+    while ($result != -1) {
+        print "Found + at $result\n" if ($debug);
+        push(@flag_locations,$result);
+        $offset = $result + 1;
+        $result = index($split_diff[0], '+', $offset);
+    }
+
+    foreach my $line (@split_diff) {
+        my $first_char=substr($line, 0, 1);
+        my $last_char=substr($line, -1, 1);
+        my $left_line_num="&nbsp;";
+        my $left_line="<no line>";
+        my $right_line_num="&nbsp;";
+        my $right_line="<no line>";
+
+        print "$file_key $first_char $last_char '$line'\n" if ($debug);
+
+        if ($first_char eq "*") {
+            $left_line_num=int(substr($line, ($flag_locations[0] + 1), ($flag_locations[1] - $flag_locations[0] - 1)));
+            $left_line=substr($line, ($flag_locations[1] + 1), ($flag_locations[2] - $flag_locations[1] - 1));
+            print "left $file_key $left_line_num\n" if ($debug);
+        }
+
+        if ($last_char eq "*") {
+            $right_line_num=int(substr($line, ($flag_locations[2] + 1), ($flag_locations[3] - $flag_locations[2] - 1)));
+            $right_line=substr($line, ($flag_locations[3] + 1), ($flag_locations[4] - $flag_locations[3] - 1));
+            print "right $file_key $right_line_num\n" if ($debug);
+        }
+
+        if (($right_line_num ne "&nbsp;") or ($left_line_num ne "&nbsp;")) {
+            if (not $header_line_done) {
+                `curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST $rails_server/unsuccessful_files/ -d '{ "unsuccessful_file" : { "result_id": $result_id, "left_line": "$left_filename|==|$left_url/$left_filename", "right_line": "$right_filename|==|$right_url/$right_filename", "left_line_number": "0", "right_line_number": "0", "compare_key": "$file_key" } }'`;
+                $header_line_done=1;
+            }
+            `curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST $rails_server/unsuccessful_files/ -d '{ "unsuccessful_file" : { "result_id": $result_id, "left_line": "$left_line", "right_line": "$right_line", "left_line_number": "$left_line_num", "right_line_number": "$right_line_num", "compare_key": "$file_key" } }'`;
+        } 
+    }
+}
+
 

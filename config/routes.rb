@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   resources :sessions
   resources :users
   resources :results, :only => [ :update, :destroy ]
+  resources :unmatched_files, :only => [ :create, :destroy ]
+  resources :successful_files, :only => [ :create, :destroy ]
+  resources :unsuccessful_files, :only => [ :create, :destroy ]
   resources :diffs do
     member do
       get :run
@@ -17,6 +20,7 @@ Rails.application.routes.draw do
 
   root "diffs#index"
   get '/home' => "diffs#index"
+  get '/fetch_result' => "diffs#from_result_id", as: 'fetch_result'
 
   get ':controller(/:action(/:id(.:format)))'
 
