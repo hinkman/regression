@@ -1,5 +1,5 @@
-#!/Users/hinkman/perl5/perlbrew/perls/perl-5.16.0/bin/perl -w
 #!/opt/perl5/bin/perl -w
+#!/Users/hinkman/perl5/perlbrew/perls/perl-5.16.0/bin/perl -w
 
 use File::Slurp qw( edit_file edit_file_lines );
 use File::Map qw( map_file unmap );
@@ -378,7 +378,6 @@ sub find_match {
     our %right_dir_hash;
     our $results_file;
     our $rails_server;
-    our $result_id;
     our $left_url;
     my $mapped_file;
     my $matches_keep_ref;
@@ -459,7 +458,7 @@ sub find_match {
             # my $diff = diff "$file", "$gis50dir/$matched_file", { STYLE => "Context" };
             # print "$diff\n" if ($debug > 1);
             if ($file_cksum == $right_dir_hash{$matched_file}{"cksum"}) {
-                print "MATCH! $matched_file\n\n" if ($debug);
+                print "MATCH! $matched_file result_id:$result_id, left_name:$current_left_file, right_name:$matched_file\n\n" if ($debug);
                 $found_match=1;
                 `curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST $rails_server/successful_files/ -d '{ "successful_file" : { "result_id": $result_id, "left_name": "$current_left_file", "right_name":"$matched_file" } }'`;
                 unlink $full_left_file;
@@ -643,28 +642,28 @@ sub parse_diff {
     foreach my $line (@split_diff) {
         my $first_char=substr($line, 0, 1);
         my $last_char=substr($line, -1, 1);
-        my $left_line_num="&nbsp;";
+        my $left_line_num=0;
         my $left_line="<no line>";
-        my $right_line_num="&nbsp;";
+        my $right_line_num=0;
         my $right_line="<no line>";
 
         print "$file_key $first_char $last_char '$line'\n" if ($debug);
 
         if ($first_char eq "*") {
-            $left_line_num=int(substr($line, ($flag_locations[0] + 1), ($flag_locations[1] - $flag_locations[0] - 1)));
+            $left_line_num=int(substr($line, ($flag_locations[0] + 1), ($flag_locations[1] - $flag_locations[0] - 1))) + 1;
             $left_line=substr($line, ($flag_locations[1] + 1), ($flag_locations[2] - $flag_locations[1] - 1));
             print "left $file_key $left_line_num\n" if ($debug);
         }
 
         if ($last_char eq "*") {
-            $right_line_num=int(substr($line, ($flag_locations[2] + 1), ($flag_locations[3] - $flag_locations[2] - 1)));
+            $right_line_num=int(substr($line, ($flag_locations[2] + 1), ($flag_locations[3] - $flag_locations[2] - 1))) + 1;
             $right_line=substr($line, ($flag_locations[3] + 1), ($flag_locations[4] - $flag_locations[3] - 1));
             print "right $file_key $right_line_num\n" if ($debug);
         }
 
-        if (($right_line_num ne "&nbsp;") or ($left_line_num ne "&nbsp;")) {
+        if ($right_line_num or $left_line_num) {
             if (not $header_line_done) {
-                `curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST $rails_server/unsuccessful_files/ -d '{ "unsuccessful_file" : { "result_id": $result_id, "left_line": "$left_filename|==|$left_url/$left_filename", "right_line": "$right_filename|==|$right_url/$right_filename", "left_line_number": "0", "right_line_number": "0", "compare_key": "$file_key" } }'`;
+                `curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST $rails_server/unsuccessful_files/ -d '{ "unsuccessful_file" : { "result_id": $result_id, "left_line": "$left_filename|==|$left_url/$left_filename", "right_line": "$right_filename|==|$right_url/$right_filename", "left_line_number": "-1", "right_line_number": "-1", "compare_key": "$file_key" } }'`;
                 $header_line_done=1;
             }
             `curl -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST $rails_server/unsuccessful_files/ -d '{ "unsuccessful_file" : { "result_id": $result_id, "left_line": "$left_line", "right_line": "$right_line", "left_line_number": "$left_line_num", "right_line_number": "$right_line_num", "compare_key": "$file_key" } }'`;

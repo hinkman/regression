@@ -36,7 +36,7 @@ class DiffsController < ApplicationController
     @unmatched_left = UnmatchedFile.where_result_id_and_side(@result.id,'left').order('name ASC')
     @unmatched_right = UnmatchedFile.where_result_id_and_side(@result.id,'right').order('name ASC')
     @successful = SuccessfulFile.where_result_id(@result.id).order('left_name ASC')
-    @unsuccessful = UnsuccessfulFile.where_result_id(@result.id).order('compare_key,left_line_number,right_line_number ASC')
+    @unsuccessful = UnsuccessfulFile.where_result_id(@result.id).order('compare_key,id ASC')
     respond_to do |format|
       format.js {}
     end
@@ -56,6 +56,7 @@ class DiffsController < ApplicationController
     @working_result=Result.new(:diff_id => @diff.id, :is_active => true, :pct_complete => 0)
     @working_result.save
     `(./bin/regression_diff.pl --result_id #{@working_result.id} --config_file #{@diff.config_file.cf.path} --left_zip #{@diff.left_file_set.fs.path} --right_zip #{@diff.right_file_set.fs.path} --output_prefix #{@current_user.login} 2>&1 | logger -t regression) > /dev/null 2>&1 &`
+    # `(./bin/regression_diff.pl --result_id #{@working_result.id} --config_file #{@diff.config_file.cf.path} --left_zip #{@diff.left_file_set.fs.path} --right_zip #{@diff.right_file_set.fs.path} --output_prefix #{@current_user.login} > /tmp/regression.log 2>&1) > /dev/null 2>&1 &`
     sleep 2
     respond_to do |format|
       # format.html { redirect_to show_diff_path, status: :ok, location: @diff, notice: 'run was called.' }
