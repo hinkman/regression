@@ -457,7 +457,7 @@ sub find_match {
                 unlink $full_left_file;
                 delete $right_dir_hash{$matched_file};
                 $index_counter=0;
-                $index_counter++ until $$right_dir_array_ref[$index_counter] eq "$matched_file";
+                $index_counter++ until $$right_dir_array_ref[$index_counter] eq $matched_file;
                 splice(@$right_dir_array_ref, $index_counter, 1);
                 unlink "$current_right_dir/.cleaned/$matched_file";
                 unlink "$current_right_dir/.hashed/$matched_file";
@@ -503,7 +503,7 @@ sub find_match {
                 &parse_diff($current_left_file,$matched_file,$right_dir_hash{$matched_file}{"diff"},$current_useful);
                 delete $right_dir_hash{$matched_file};
                 $index_counter=0;
-                $index_counter++ until $$right_dir_array_ref[$index_counter] eq "$matched_file";
+                $index_counter++ until $$right_dir_array_ref[$index_counter] eq $matched_file;
                 splice(@$right_dir_array_ref, $index_counter, 1);
                 (not $found_useful) and $found_useful=$matched_file;
                 last;
@@ -519,9 +519,9 @@ sub find_match {
         if (($#$matches_ref == 0) and (not $current_useful)) {
             $right_dir_hash{$$matches_ref[0]}{"diff"}=(-r "$current_right_dir/.cleaned/".$$matches_ref[0]) ? diff("$full_left_file", "$current_right_dir/.cleaned/".$$matches_ref[0], { STYLE => "Table" }) : diff("$full_left_file", "$current_right_dir/".$$matches_ref[0], { STYLE => "Table" });
             &parse_diff($current_left_file,$$matches_ref[0],$right_dir_hash{$$matches_ref[0]}{"diff"});
-            delete $right_dir_hash{$matched_file};
+            delete $right_dir_hash{$$matches_ref[0]};
             $index_counter=0;
-            $index_counter++ until $$right_dir_array_ref[$index_counter] eq "$matched_file";
+            $index_counter++ until $$right_dir_array_ref[$index_counter] eq $$matches_ref[0];
             splice(@$right_dir_array_ref, $index_counter, 1);
         } else {
 
