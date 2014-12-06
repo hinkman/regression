@@ -502,6 +502,9 @@ sub find_match {
                 print $right_dir_hash{$matched_file}{"diff"}."\n" if ($debug);
                 &parse_diff($current_left_file,$matched_file,$right_dir_hash{$matched_file}{"diff"},$current_useful);
                 delete $right_dir_hash{$matched_file};
+                $index_counter=0;
+                $index_counter++ until $$right_dir_array_ref[$index_counter] eq "$matched_file";
+                splice(@$right_dir_array_ref, $index_counter, 1);
                 (not $found_useful) and $found_useful=$matched_file;
                 last;
             }
@@ -512,16 +515,19 @@ sub find_match {
     if ((not $found_match) and (not $found_useful)) {
 
         # Special case where we weren't given a useful value in the config, but the files
-        # can be matched on a one-to-one via filename, we want to get a diff. This is a little
-        # iffy, hence the check to make sure I am not overwriting a previous diff
-        # if ($#$matches_ref == 0) {
-        #     $right_dir_hash{$$matches_ref[0]}{"diff"}=(-r "$current_right_dir/.cleaned/".$$matches_ref[0]) ? diff("$full_left_file", "$current_right_dir/.cleaned/".$$matches_ref[0], { STYLE => "Table" }) : diff("$full_left_file", "$current_right_dir/".$$matches_ref[0], { STYLE => "Table" });
-        #     &parse_diff($current_left_file,$$matches_ref[0],$right_dir_hash{$$matches_ref[0]}{"diff"});
-        # } else {
+        # can be matched on a one-to-one via filename, we want to get a diff. 
+        if (($#$matches_ref == 0) and (not $current_useful)) {
+            $right_dir_hash{$$matches_ref[0]}{"diff"}=(-r "$current_right_dir/.cleaned/".$$matches_ref[0]) ? diff("$full_left_file", "$current_right_dir/.cleaned/".$$matches_ref[0], { STYLE => "Table" }) : diff("$full_left_file", "$current_right_dir/".$$matches_ref[0], { STYLE => "Table" });
+            &parse_diff($current_left_file,$$matches_ref[0],$right_dir_hash{$$matches_ref[0]}{"diff"});
+            delete $right_dir_hash{$matched_file};
+            $index_counter=0;
+            $index_counter++ until $$right_dir_array_ref[$index_counter] eq "$matched_file";
+            splice(@$right_dir_array_ref, $index_counter, 1);
+        } else {
 
             # Call it unmatched left
             `curl -s -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST $rails_server/unmatched_files/ -d '{ "unmatched_file" : { "result_id": $result_id, "side": "left", "name":"$current_left_file", "url":"$left_url/$cleaned_left_file" } }'`;
-        # }
+        }
         return($matches_ref);        
     }
 }
