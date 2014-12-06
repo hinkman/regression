@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141111210703) do
+ActiveRecord::Schema.define(version: 20141206001403) do
 
   create_table "actions", force: true do |t|
     t.string   "action"
@@ -106,6 +106,7 @@ ActiveRecord::Schema.define(version: 20141111210703) do
     t.string   "compare_key"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "useful"
   end
 
   create_table "users", force: true do |t|

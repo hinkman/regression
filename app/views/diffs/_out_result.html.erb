@@ -15,7 +15,8 @@
                 <div class="modal-body" style="white-space:nowrap;">
                     <% unsuccessful.where(:right_line_number => '-1', :left_line_number => '-1').each do |compare_set| %>
                       Left File: <a href=<%= compare_set.left_line.split('|==|').last %> ><%= compare_set.left_line.split('|==|').first %></a><br>
-                      Right File: <a href=<%= compare_set.left_line.split('|==|').last %> ><%= compare_set.right_line.split('|==|').first %></a>
+                      Right File: <a href=<%= compare_set.left_line.split('|==|').last %> ><%= compare_set.right_line.split('|==|').first %></a><br>
+                      Useful: <%= compare_set.useful %>
                       <table class="table table-bordered table-striped">
                           <thead>
                           <tr>
@@ -67,7 +68,7 @@
                 </div>
                 <div class="modal-body">
                     <% unmatched_left.each do |file| %>
-                      <%= file.name %>
+                      <a href=<%= file.url %> ><%= file.name %></a><br>
                     <% end %>
                 </div>
                 <div class="modal-footer">
@@ -91,7 +92,7 @@
                 </div>
                 <div class="modal-body">
                     <% unmatched_right.each do |file| %>
-                      <%= file.name %>
+                      <a href=<%= file.url %> ><%= file.name %></a><br>
                     <% end %>
                 </div>
                 <div class="modal-footer">
