@@ -7,6 +7,7 @@ use File::Basename;
 use Text::Diff;
 use File::Copy;
 # use String::CRC::Cksum qw(cksum);
+use String::CRC;
 use HTML::Entities;
 use Config::YAML::Tiny;
 use Archive::Extract;
@@ -631,7 +632,8 @@ sub parse_diff {
     my $header_line_done=0;
 
     my @split_diff=split(/\n/,$diff_output);
-    my $file_key=unpack("%32W*",$left_filename) % 65535;
+    # my $file_key=unpack("%32W*",$left_filename) % 65535;
+    my $file_key=crc($left_filename);
 
     my $offset = 0;
     my $result = index($split_diff[0], '+', $offset);
