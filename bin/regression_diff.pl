@@ -519,7 +519,7 @@ sub find_match {
         # can be matched on a one-to-one via filename, we want to get a diff. 
         if (($#$matches_ref == 0) and (not $current_useful)) {
             $right_dir_hash{$$matches_ref[0]}{"diff"}=(-r "$current_right_dir/.cleaned/".$$matches_ref[0]) ? diff("$full_left_file", "$current_right_dir/.cleaned/".$$matches_ref[0], { STYLE => "Table" }) : diff("$full_left_file", "$current_right_dir/".$$matches_ref[0], { STYLE => "Table" });
-            &parse_diff($current_left_file,$$matches_ref[0],$right_dir_hash{$$matches_ref[0]}{"diff"});
+            &parse_diff($current_left_file,$$matches_ref[0],$right_dir_hash{$$matches_ref[0]}{"diff"},$current_useful);
             delete $right_dir_hash{$$matches_ref[0]};
             $index_counter=0;
             $index_counter++ until $$right_dir_array_ref[$index_counter] eq $$matches_ref[0];
