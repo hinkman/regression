@@ -23,7 +23,7 @@
                 L: <%= sort_link(@q,:left_file_set_name,'Left File Set')%><br>
                 R: <%= sort_link(@q,:right_file_set_name,'Right File Set')%>
             </th>
-            <th><%= sort_link(@q,:results_updated_at,'Last Result') %></th>
+            <th><%= sort_link(@q,:results_updated_at,'Last Result', default_order: :desc) %></th>
             <th></th>
         </tr>
         </thead>

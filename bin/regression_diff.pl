@@ -344,6 +344,8 @@ sub in_place_clean {
                 edit_file_lines { $_ = '' if /$rstring/ } $editor;
             } elsif ($$replace_strings_hashref{$rstring} eq "string") {
                 edit_file { s/$rstring//gs } $editor;
+            } elsif ($$replace_strings_hashref{$rstring} eq "stringm") {
+                edit_file { s/$rstring//gms } $editor;
             }
             $exclude_complete_hash{$editor}=1;
         }
