@@ -1,50 +1,52 @@
 <div class="row">
-    <% if unsuccessful.length > 0 %>
+    <% if @unsuccessful.length > 0 %>
       <a href="#" class="btn btn-danger"
-         data-toggle="modal" data-target="#unsuccessModal">Unsuccessful Files - <%= unsuccessful.group(:compare_key).length %></a>
+         data-toggle="modal" data-target="#unsuccessModal">Unsuccessful Files - <%= @unsuccessful_count.length %></a>
     <% else %>
-      <a href="#" class="btn btn-default">Unsuccessful Files - <%= unsuccessful.length %></a>
+      <a href="#" class="btn btn-default">Unsuccessful Files - <%= @unsuccessful_count.length %></a>
     <% end %>
     <div class="modal fade" id="unsuccessModal" tabindex="-1" role="dialog" aria-labelledby="unsuccessModal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="btn btn-xs btn-default pull-right" data-dismiss="modal" aria-hidden="true">Close</button>
-                    <h4 class="modal-title" id="unsuccessFiles">Unsuccessful Files - <%= unsuccessful.group(:compare_key).length %></h4>
+                    <h4 class="modal-title" id="unsuccessFiles">Unsuccessful Files - <%= @unsuccessful.group(:compare_key).length %></h4>
                 </div>
                 <div class="modal-body" style="white-space:nowrap;">
-                    <% unsuccessful.where(:right_line_number => '-1', :left_line_number => '-1').each do |compare_set| %>
-                      Left File: <a href=<%= compare_set.left_line.split('|==|').last %> ><%= compare_set.left_line.split('|==|').first %></a><br>
-                      Right File: <a href=<%= compare_set.right_line.split('|==|').last %> ><%= compare_set.right_line.split('|==|').first %></a><br>
-                      Useful: <%= compare_set.useful %>
-                      <table class="table table-bordered table-striped">
-                          <thead>
-                          <tr>
-                              <th>Line</th>
-                              <th>
-                                  Left Side<br>
-                                  Right side
-                              </th>
-                          </tr>
-                          </thead>
-
-                          <tbody>
-                          <% unsuccessful.where_compare_key_and_not_line_zero(compare_set.compare_key).each do |line| %>
-                            <tr style="font-family:monospace;">
-                                <td>
-                                    <%= line.left_line_number.equal?(0) ? '-' : line.left_line_number %><br>
-                                    <%= line.right_line_number.equal?(0) ? '-' : line.right_line_number %>
-                                </td>
-                                <td width="800" height="40">
-                                    <div style="width:800px; height:60px; overflow-x:auto; overflow-y:fixed; white-space:nowrap;">
-                                        <%= line.left_line %><br>
-                                        <%= line.right_line %>
-                                    </div>
-                                </td>
+                    <% @unsuccessful.where(:right_line_number => '-1', :left_line_number => '-1').each do |compare_set| %>
+                      <% if @unsuccessful.where_compare_key_and_not_line_zero(compare_set.compare_key).length > 0 %>
+                        Left File: <a href=<%= compare_set.left_line.split('|==|').last %> ><%= compare_set.left_line.split('|==|').first %></a><br>
+                        Right File: <a href=<%= compare_set.right_line.split('|==|').last %> ><%= compare_set.right_line.split('|==|').first %></a><br>
+                        Useful: <%= compare_set.useful %>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>Line</th>
+                                <th>
+                                    Left Side<br>
+                                    Right side
+                                </th>
                             </tr>
-                          <% end %>
-                          </tbody>
-                      </table>
+                            </thead>
+
+                            <tbody>
+                            <% @unsuccessful.where_compare_key_and_not_line_zero(compare_set.compare_key).each do |line| %>
+                              <tr style="font-family:monospace;">
+                                  <td>
+                                      <%= line.left_line_number.equal?(0) ? '-' : line.left_line_number %><br>
+                                      <%= line.right_line_number.equal?(0) ? '-' : line.right_line_number %>
+                                  </td>
+                                  <td width="800" height="40">
+                                      <div style="width:800px; height:60px; overflow-x:auto; overflow-y:fixed; white-space:nowrap;">
+                                          <%= line.left_line %><br>
+                                          <%= line.right_line %>
+                                      </div>
+                                  </td>
+                              </tr>
+                            <% end %>
+                            </tbody>
+                        </table>
+                      <% end %>
                     <% end %>
                 </div>
                 <div class="modal-footer">

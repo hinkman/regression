@@ -37,6 +37,7 @@ class DiffsController < ApplicationController
     @unmatched_right = UnmatchedFile.where_result_id_and_side(@result.id,'right').order('name ASC')
     @successful = SuccessfulFile.where_result_id(@result.id).order('left_name ASC')
     @unsuccessful = UnsuccessfulFile.where_result_id(@result.id).order('compare_key,id ASC')
+    @unsuccessful_count = UnsuccessfulFile.where_result_id(@result.id).group('compare_key')
     respond_to do |format|
       format.js {}
     end

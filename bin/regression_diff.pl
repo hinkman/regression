@@ -45,6 +45,9 @@ my $left_zip;
 my $right_zip;
 my $result_id;
 my $config_file;
+$total_mismatch_max=100;
+$file_mismatch_max=20;
+
 # foreach $key (keys %ENV) {
 #     print "$key $ENV{$key}\n";
 # }
@@ -54,7 +57,9 @@ GetOptions ("config_file=s" => \$config_file,
             "result_id=i" => \$result_id,
             "left_zip=s" => \$left_zip,
             "right_zip=s" => \$right_zip,
-            "dir_date=s" => \$dir_date)
+            "dir_date=s" => \$dir_date,
+            "total_mismatch_max=i" => \$total_mismatch_max,
+            "file_mismatch_max=i" => \$file_mismatch_max)
 or die("Error in command line arguments\n");
 # $output_prefix = $ARGV[3];
 print "$config_file $output_prefix $left_zip $right_zip $dir_date $result_id\n" if ($debug);
@@ -632,10 +637,15 @@ sub parse_diff {
     (my $left_filename, my $right_filename, my $diff_output, my $useful)=@_;
     my @flag_locations;
     my $header_line_done=0;
+    my $current_mismatch_count=0;
+    my %mismatch_hash;
+
+    my $file_key=crc($left_filename);
+    `curl -s -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST $rails_server/unsuccessful_files/ -d '{ "unsuccessful_file" : { "result_id": $result_id, "left_line": "$left_filename|==|$left_url/$left_filename", "right_line": "$right_filename|==|$right_url/$right_filename", "left_line_number": "-1", "right_line_number": "-1", "compare_key": "$file_key", "useful": "$useful" } }'`;
+    return if (not $total_mismatch_max);
 
     my @split_diff=split(/\n/,$diff_output);
     # my $file_key=unpack("%32W*",$left_filename) % 65535;
-    my $file_key=crc($left_filename);
 
     my $offset = 0;
     my $result = index($split_diff[0], '+', $offset);
@@ -668,13 +678,17 @@ sub parse_diff {
             print "right $file_key $right_line_num\n" if ($debug);
         }
 
-        if ($right_line_num or $left_line_num) {
-            if (not $header_line_done) {
-                `curl -s -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST $rails_server/unsuccessful_files/ -d '{ "unsuccessful_file" : { "result_id": $result_id, "left_line": "$left_filename|==|$left_url/$left_filename", "right_line": "$right_filename|==|$right_url/$right_filename", "left_line_number": "-1", "right_line_number": "-1", "compare_key": "$file_key", "useful": "$useful" } }'`;
-                $header_line_done=1;
-            }
+        my $hash_right_line=$right_line; $hash_right_line=~s/^\s*//; $hash_right_line=substr($hash_right_line,0,5);
+        my $hash_left_line=$left_line; $hash_left_line=~s/^\s*//; $hash_left_line=substr($hash_left_line,0,5);
+        my $hash_key="$hash_left_line:::$hash_right_line";
+
+        if (($right_line_num or $left_line_num) and (not exists $mismatch_hash{$hash_key})) {
+            $mismatch_hash{$hash_key}=1;
             `curl -s -H 'Content-Type: application/json' -H 'Accept: application/json' -X POST $rails_server/unsuccessful_files/ -d '{ "unsuccessful_file" : { "result_id": $result_id, "left_line": "$left_line", "right_line": "$right_line", "left_line_number": "$left_line_num", "right_line_number": "$right_line_num", "compare_key": "$file_key" } }'`;
-        } 
+            ++$current_mismatch_count;
+            --$total_mismatch_max;
+        }
+        return if ((not $total_mismatch_max) or ($current_mismatch_count >= $file_mismatch_max));
     }
 }
 
